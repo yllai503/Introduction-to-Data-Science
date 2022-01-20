@@ -55,11 +55,20 @@ Please, do **not** put these data files into Git; they are big. Do **not** copy 
 ```{bash}
 ls -l /mnt/mimiciv/1.0/core
 ```
+Content of the folder `hosp` is
+```{bash}
+ls -l /mnt/mimiciv/1.0/hosp
+```
+Content of the folder `icu` is
+```{bash}
+ls -l /mnt/mimiciv/1.0/icu
+```
+
 
 3. Briefly describe what bash commands `zcat`, `zless`, `zmore`, and `zgrep` do.
 
 4. What's the output of following bash script?
-    ```{bash, eval=F}
+    ```{bash, eval=T}
     for datafile in /mnt/mimiciv/1.0/core/*.gz
       do
         ls -l $datafile
