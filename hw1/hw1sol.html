@@ -271,8 +271,16 @@ pre code {
 ## -rw-r--r--. 1 root root  352443512 Jan  4 21:52 inputevents.csv.gz
 ## -rw-r--r--. 1 root root   37095672 Jan  4 21:52 outputevents.csv.gz
 ## -rw-r--r--. 1 root root   20567368 Jan  4 21:52 procedureevents.csv.gz</code></pre>
+<p>Those files from MIMIC-IV are too big so that they needed to be compressed. <code>.csv.gz</code> files are <code>.csv</code> files compressed with gzip utility.</p>
 <ol start="3" style="list-style-type: decimal">
-<li><p>Briefly describe what bash commands <code>zcat</code>, <code>zless</code>, <code>zmore</code>, and <code>zgrep</code> do.</p></li>
+<li>Briefly describe what bash commands <code>zcat</code>, <code>zless</code>, <code>zmore</code>, and <code>zgrep</code> do.</li>
+</ol>
+<p><strong>Solution:</strong><br />
+<code>zcat</code>: It allows us to view the contents of a compressed file without uncompressing it. It expands a compressed file to standard output allowing us to have a look at its contents.<br />
+<code>zless</code>: It is a filter which allows paginating a compressed file and examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file when switching between lines.<br />
+<code>zmore</code>: It is a filter which allows paginating a compressed file examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file separated by lines.<br />
+<code>zgrep</code>: It allows us to search inside a compressed file without uncompressing it.</p>
+<ol start="4" style="list-style-type: decimal">
 <li><p>What’s the output of following bash script?</p>
 <pre class="bash"><code>for datafile in /mnt/mimiciv/1.0/core/*.gz
   do

@@ -63,9 +63,15 @@ Content of the folder `icu` is
 ```{bash}
 ls -l /mnt/mimiciv/1.0/icu
 ```
-
+Those files from MIMIC-IV are too big so that they needed to be compressed. `.csv.gz` files are `.csv` files compressed with gzip utility.
 
 3. Briefly describe what bash commands `zcat`, `zless`, `zmore`, and `zgrep` do.
+
+**Solution:**  
+`zcat`: It allows us to view the contents of a compressed file without uncompressing it. It expands a compressed file to standard output allowing us to have a look at its contents.  
+`zless`: It is a filter which allows paginating a compressed file and examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file when switching between lines.   
+`zmore`: It is a filter which allows paginating a compressed file examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file separated by lines.  
+`zgrep`: It allows us to search inside a compressed file without uncompressing it.
 
 4. What's the output of following bash script?
     ```{bash, eval=T}
