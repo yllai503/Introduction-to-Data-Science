@@ -434,7 +434,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 </ol>
 <p><strong>Solution:</strong><br />
 The output will be the 16th line to 20th line of the novel <em>Pride and Prejudice</em>.<br />
-The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> are the first, second, and third commands after <code>./middle.sh</code>, respectively. We need the first line of the shell script because we have to make the file executable to run the command with respect to these files.</p>
+The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> are the first, second, and third commands after <code>./middle.sh</code>, respectively. In this case, they are <code>file name</code>, <code>end of the line (we want to read the file form the first line)</code>, and <code>the number of these lines</code>. We need the first line of the shell script because we have to tell linux to use <code>sh</code> to run the following command.</p>
 <div id="q5.-more-fun-with-linux" class="section level3">
 <h3>Q5. More fun with Linux</h3>
 <p>Try following commands in Bash and interpret the results: <code>cal</code>, <code>cal 2021</code>, <code>cal 9 1752</code> (anything unusual?), <code>date</code>, <code>hostname</code>, <code>arch</code>, <code>uname -a</code>, <code>uptime</code>, <code>who am i</code>, <code>who</code>, <code>w</code>, <code>id</code>, <code>last | head</code>, <code>echo {con,pre}{sent,fer}{s,ed}</code>, <code>time sleep 5</code>, <code>history | tail</code>.</p>
@@ -503,7 +503,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 ##        calendar for that month is a bit unusual.</code></pre>
 <p>The command <code>date</code> shows the system date and time (UTC by default).</p>
 <pre class="bash"><code>   date</code></pre>
-<pre><code>## Fri Jan 21 22:55:03 UTC 2022</code></pre>
+<pre><code>## Fri Jan 21 23:03:11 UTC 2022</code></pre>
 <p>The command <code>hostname</code> shows the computer’s hostname.</p>
 <pre class="bash"><code>   hostname</code></pre>
 <pre><code>## biostat-203b-teaching-server</code></pre>
@@ -515,7 +515,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 <pre><code>## Linux biostat-203b-teaching-server 3.10.0-1160.49.1.el7.x86_64 #1 SMP Tue Nov 30 15:51:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
 <p>The command <code>uptime</code> shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.</p>
 <pre class="bash"><code>   uptime</code></pre>
-<pre><code>##  22:55:03 up 18 days, 22:28,  3 users,  load average: 1.73, 0.94, 0.53</code></pre>
+<pre><code>##  23:03:12 up 18 days, 22:36,  3 users,  load average: 0.99, 0.75, 0.57</code></pre>
 <p>The command <code>whoami</code> shows the username of the current user.</p>
 <pre class="bash"><code>   whoami</code></pre>
 <pre><code>## yllai</code></pre>
@@ -526,11 +526,11 @@ The command <code>cal</code> shows the calendar of this month.</p>
 ## capj245  pts/13       2022-01-21 03:54 (s-164-67-232-61.resnet.ucla.edu)</code></pre>
 <p>The command <code>w</code> shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process.</p>
 <pre class="bash"><code>   w</code></pre>
-<pre><code>##  22:55:03 up 18 days, 22:28,  3 users,  load average: 1.73, 0.94, 0.53
+<pre><code>##  23:03:12 up 18 days, 22:36,  3 users,  load average: 0.99, 0.75, 0.57
 ## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
 ## tomokiok pts/1    42.166.94.34.bc. 11Jan22 10days  0.01s  0.01s -bash
 ## tomokiok pts/3    42.166.94.34.bc. 10Jan22 10days  1.23s  1.05s ssh -i /home/tomokiokuno0528/.ssh/id_rsa tomokiokuno0528@server.ucla-biostat-203b.com
-## capj245  pts/13   s-164-67-232-61. 03:54   18:59m  0.01s  0.01s -bash</code></pre>
+## capj245  pts/13   s-164-67-232-61. 03:54   19:08m  0.01s  0.01s -bash</code></pre>
 <p>The command <code>id</code> shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.</p>
 <pre class="bash"><code>   id</code></pre>
 <pre><code>## uid=1018(yllai) gid=1020(yllai) groups=1020(yllai) context=system_u:system_r:initrc_t:s0</code></pre>
@@ -554,7 +554,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 <pre><code>## 
 ## real 0m5.002s
 ## user 0m0.000s
-## sys  0m0.002s</code></pre>
+## sys  0m0.001s</code></pre>
 <p>The command <code>history | tail</code> shows the last ten lines of the list of the commands entered since the session started.</p>
 <pre class="bash"><code>   history | tail</code></pre>
 </div>

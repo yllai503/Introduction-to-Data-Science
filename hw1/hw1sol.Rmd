@@ -187,7 +187,7 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 
 **Solution:**  
 The output will be the 16th line to 20th line of the novel *Pride and Prejudice*.  
-The meaning of `"$1"`, `"$2"`, and `"$3"` are the first, second, and third commands after `./middle.sh`, respectively. We need the first line of the shell script because we have to make the file executable to run the command with respect to these files.
+The meaning of `"$1"`, `"$2"`, and `"$3"` are the first, second, and third commands after `./middle.sh`, respectively. In this case, they are `file name`, `end of the line (we want to read the file form the first line)`, and `the number of these lines`. We need the first line of the shell script because we have to tell linux to use `sh` to run the following command.
 
 ### Q5. More fun with Linux
 
