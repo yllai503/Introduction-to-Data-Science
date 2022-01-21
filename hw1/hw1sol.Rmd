@@ -155,7 +155,7 @@ Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git
     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
-      echo $char: 
+      echo $char:
       grep -o -w  $char pg42671.txt | wc -w
     done
     ```
@@ -177,17 +177,23 @@ Instead, the command `echo 'hello, world' >> test2.txt` will append `hello, worl
 
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
-    ```{bash eval=FALSE}
+    ```{bash eval=F}
     #!/bin/sh
     # Select lines from the middle of a file.
     # Usage: bash middle.sh filename end_line num_lines
     head -n "$2" "$1" | tail -n "$3"
     ```
+
 Using `chmod` make the file executable by the owner, and run 
-    ```{bash eval=FALSE}
+    ```{bash eval=T}
+    chmod u+x ./middle.sh pg42671.txt
     ./middle.sh pg42671.txt 20 5
     ```
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+
+**Solution:**  
+The output will be the 16th line to 20th line of the novel *Pride and Prejudice*.  
+The meaning of `"$1"`, `"$2"`, and `"$3"` are the first, second, and third commands after `./middle.sh`, respectively. We need the first line of the shell script because we have to make the file executable to run the command with respect to these files.
 
 ### Q5. More fun with Linux
 

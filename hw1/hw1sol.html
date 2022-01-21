@@ -414,7 +414,7 @@ The count for each unique value of <code>ethnicity</code> is noted in the parent
 <pre class="bash"><code>wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
 for char in Elizabeth Jane Lydia Darcy
 do
-  echo $char: 
+  echo $char:
   grep -o -w  $char pg42671.txt | wc -w
 done</code></pre>
 <pre><code>## File ‘pg42671.txt’ already there; not retrieving.
@@ -441,11 +441,25 @@ Instead, the command <code>echo &#39;hello, world&#39; &gt;&gt; test2.txt</code>
 <pre class="bash"><code>#!/bin/sh
 # Select lines from the middle of a file.
 # Usage: bash middle.sh filename end_line num_lines
-head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
-<p>Using <code>chmod</code> make the file executable by the owner, and run</p>
-<pre class="bash"><code>./middle.sh pg42671.txt 20 5</code></pre>
-<p>Explain the output. Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script. Why do we need the first line of the shell script?</p></li>
+head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre></li>
 </ol>
+<p>Using <code>chmod</code> make the file executable by the owner, and run</p>
+<pre><code>```bash
+chmod u+x ./middle.sh pg42671.txt
+./middle.sh pg42671.txt 20 5
+```
+
+```
+## 
+## Author: Jane Austen
+## 
+## Editor: R. W. (Robert William) Chapman
+## 
+```</code></pre>
+<p>Explain the output. Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script. Why do we need the first line of the shell script?</p>
+<p><strong>Solution:</strong><br />
+The output will be the 16th line to 20th line of the novel <em>Pride and Prejudice</em>.<br />
+The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> are the first, second, and third commands after <code>./middle.sh</code>, respectively. We need the first line of the shell script because we have to make the file executable to run the command with respect to these files.</p>
 <div id="q5.-more-fun-with-linux" class="section level3">
 <h3>Q5. More fun with Linux</h3>
 <p>Try following commands in Bash and interpret the results: <code>cal</code>, <code>cal 2021</code>, <code>cal 9 1752</code> (anything unusual?), <code>date</code>, <code>hostname</code>, <code>arch</code>, <code>uname -a</code>, <code>uptime</code>, <code>who am i</code>, <code>who</code>, <code>w</code>, <code>id</code>, <code>last | head</code>, <code>echo {con,pre}{sent,fer}{s,ed}</code>, <code>time sleep 5</code>, <code>history | tail</code>.</p>
@@ -514,7 +528,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 ##        calendar for that month is a bit unusual.</code></pre>
 <p>The command <code>date</code> shows the system date and time (UTC by default).</p>
 <pre class="bash"><code>   date</code></pre>
-<pre><code>## Fri Jan 21 07:24:26 UTC 2022</code></pre>
+<pre><code>## Fri Jan 21 22:08:46 UTC 2022</code></pre>
 <p>The command <code>hostname</code> shows the computer’s hostname.</p>
 <pre class="bash"><code>   hostname</code></pre>
 <pre><code>## biostat-203b-teaching-server</code></pre>
@@ -526,50 +540,50 @@ The command <code>cal</code> shows the calendar of this month.</p>
 <pre><code>## Linux biostat-203b-teaching-server 3.10.0-1160.49.1.el7.x86_64 #1 SMP Tue Nov 30 15:51:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
 <p>The command <code>uptime</code> shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.</p>
 <pre class="bash"><code>   uptime</code></pre>
-<pre><code>##  07:24:26 up 18 days,  6:57,  5 users,  load average: 0.68, 0.52, 0.39</code></pre>
+<pre><code>##  22:08:46 up 18 days, 21:42,  5 users,  load average: 0.44, 0.22, 0.20</code></pre>
 <p>The command <code>whoami</code> shows the username of the current user.</p>
 <pre class="bash"><code>   whoami</code></pre>
 <pre><code>## yllai</code></pre>
 <p>The command <code>who</code> shows the login name of the users, the terminal line numbers, the login time of the users in to system, and the remote host name of the user.</p>
 <pre class="bash"><code>   who</code></pre>
 <pre><code>## tomokiokuno0528 pts/1        2022-01-11 01:13 (42.166.94.34.bc.googleusercontent.com)
+## yuruidong99 pts/2        2022-01-21 21:06 (s-169-232-70-203.resnet.ucla.edu)
 ## tomokiokuno0528 pts/3        2022-01-10 23:43 (42.166.94.34.bc.googleusercontent.com)
-## maschepps pts/6        2022-01-17 19:33 (74.213.228.243)
 ## capj245  pts/13       2022-01-21 03:54 (s-164-67-232-61.resnet.ucla.edu)
-## tokramm  pts/18       2022-01-21 05:07 (76.82.34.63)</code></pre>
+## yuruidong99 pts/10       2022-01-21 21:08 (42.166.94.34.bc.googleusercontent.com)</code></pre>
 <p>The command <code>w</code> shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process.</p>
 <pre class="bash"><code>   w</code></pre>
-<pre><code>##  07:24:26 up 18 days,  6:57,  5 users,  load average: 0.68, 0.52, 0.39
+<pre><code>##  22:08:46 up 18 days, 21:42,  5 users,  load average: 0.44, 0.22, 0.20
 ## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
 ## tomokiok pts/1    42.166.94.34.bc. 11Jan22 10days  0.01s  0.01s -bash
-## tomokiok pts/3    42.166.94.34.bc. 10Jan22 10days  1.15s  0.97s ssh -i /home/tomokiokuno0528/.ssh/id_rsa tomokiokuno0528@server.ucla-biostat-203b.com
-## maschepp pts/6    74.213.228.243   Mon19    3days  0.03s  0.03s -bash
-## capj245  pts/13   s-164-67-232-61. 03:54    3:29m  0.01s  0.01s -bash
-## tokramm  pts/18   76.82.34.63      05:07    2:16m  0.01s  0.01s -bash</code></pre>
+## yuruidon pts/2    s-169-232-70-203 21:06   58:54   0.06s  0.03s ssh -i /home/yuruidong99/.ssh/id_rsa yuruidong99@server.ucla-biostat-203b.com
+## tomokiok pts/3    42.166.94.34.bc. 10Jan22 10days  1.22s  1.04s ssh -i /home/tomokiokuno0528/.ssh/id_rsa tomokiokuno0528@server.ucla-biostat-203b.com
+## capj245  pts/13   s-164-67-232-61. 03:54   18:13m  0.01s  0.01s -bash
+## yuruidon pts/10   42.166.94.34.bc. 21:08   58:54   0.01s  0.01s -bash</code></pre>
 <p>The command <code>id</code> shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.</p>
 <pre class="bash"><code>   id</code></pre>
 <pre><code>## uid=1018(yllai) gid=1020(yllai) groups=1020(yllai) context=system_u:system_r:initrc_t:s0</code></pre>
 <p>The command <code>last | head</code> shows the first ten lines of the list of all the users logged in and out since the file <code>/var/log/wtmp</code> was created.</p>
 <pre class="bash"><code>   last | head</code></pre>
-<pre><code>## tokramm  pts/18       76.82.34.63      Fri Jan 21 05:07   still logged in   
+<pre><code>## yuruidon pts/10       42.166.94.34.bc. Fri Jan 21 21:08   still logged in   
+## yuruidon pts/2        s-169-232-70-203 Fri Jan 21 21:06   still logged in   
+## yuruidon pts/10       s-169-232-70-203 Fri Jan 21 20:40 - 21:03  (00:22)    
+## tokramm  pts/18       76.82.34.63      Fri Jan 21 05:07 - 07:32  (02:25)    
 ## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:58 - 05:02  (00:04)    
 ## blei001  pts/18       cpe-76-171-0-146 Fri Jan 21 04:56 - 04:56  (00:00)    
 ## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:53 - 04:54  (00:00)    
 ## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:31 - 04:53  (00:21)    
 ## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:54   still logged in   
-## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:45 - 03:49  (00:04)    
-## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:36 - 03:38  (00:01)    
-## yuyuanli pts/30       149.142.103.176  Fri Jan 21 01:13 - 01:14  (00:00)    
-## huazhou  pts/7        108-64-58-205.li Fri Jan 21 01:03 - 01:52  (00:48)</code></pre>
+## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:45 - 03:49  (00:04)</code></pre>
 <p>The command <code>echo {con,pre}{sent,fer}{s,ed}</code> shows the combination of all possible words formatted by {con,pre}{sent,fer}{s,ed}.</p>
 <pre class="bash"><code>   echo {con,pre}{sent,fer}{s,ed}</code></pre>
 <pre><code>## consents consented confers confered presents presented prefers prefered</code></pre>
 <p>The command <code>time sleep 5</code> suspends program execution for 5 seconds.</p>
 <pre class="bash"><code>   time sleep 5</code></pre>
 <pre><code>## 
-## real 0m5.001s
-## user 0m0.001s
-## sys  0m0.000s</code></pre>
+## real 0m5.002s
+## user 0m0.000s
+## sys  0m0.002s</code></pre>
 <p>The command <code>history | tail</code> shows the last ten lines of the list of the commands entered since the session started.</p>
 <pre class="bash"><code>   history | tail</code></pre>
 </div>
