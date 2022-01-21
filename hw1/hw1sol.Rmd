@@ -32,6 +32,13 @@ sessionInfo()
 
 This exercise (and later in this course) uses the [MIMIC-IV data](https://mimic-iv.mit.edu), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Follow the instructions at <https://mimic.mit.edu/docs/gettingstarted/> to (1) complete the CITI `Data or Specimens Only Research` course and (2) obtain the PhysioNet credential for using the MIMIC-IV data. Display the verification links to your completion report and completion certificate here. (Hint: The CITI training takes a couple hours and the PhysioNet credentialing takes a couple days; do not leave it to the last minute.)
 
+**Solution:** Here are the verification link of CITI course <https://www.citiprogram.org/verify/?we89b7cca-0072-414d-aaba-aea012145240-46593790>, and the report link of CITI course <https://www.citiprogram.org/verify/?k21bb5d5a-e846-4a9c-8c32-e666926391cf-46593790>.
+The PhysioNet credential for using the MIMIC-IV data is still processing. Below is the screenshot of my credentialing application.
+<p align="center">
+  <img src="images/1642705699630.jpg" height="427" width="499">
+</p>
+
+
 ## Q3. Linux Shell Commands
 
 1. The `/mnt/mimiciv/1.0` folder on teaching server contains data sets from MIMIC-IV. Refer to the documentation <https://mimic.mit.edu/docs/iv/> for details of data files.  
@@ -48,11 +55,26 @@ Please, do **not** put these data files into Git; they are big. Do **not** copy 
 ```{bash}
 ls -l /mnt/mimiciv/1.0/core
 ```
+Content of the folder `hosp` is
+```{bash}
+ls -l /mnt/mimiciv/1.0/hosp
+```
+Content of the folder `icu` is
+```{bash}
+ls -l /mnt/mimiciv/1.0/icu
+```
+Those files from MIMIC-IV are too big so that they needed to be compressed. `.csv.gz` files are `.csv` files compressed with gzip utility.
 
 3. Briefly describe what bash commands `zcat`, `zless`, `zmore`, and `zgrep` do.
 
+**Solution:**  
+`zcat`: It allows us to view the contents of a compressed file without uncompressing it. It expands a compressed file to standard output allowing us to have a look at its contents.  
+`zless`: It is a filter which allows paginating a compressed file and examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file when switching between lines.   
+`zmore`: It is a filter which allows paginating a compressed file examination of compressed or plain text files one screenful at a time on a soft-copy terminal. It allows us to view files as a single file separated by lines.  
+`zgrep`: It allows us to search inside a compressed file without uncompressing it.
+
 4. What's the output of following bash script?
-    ```{bash, eval=F}
+    ```{bash, eval=T}
     for datafile in /mnt/mimiciv/1.0/core/*.gz
       do
         ls -l $datafile
@@ -60,48 +82,183 @@ ls -l /mnt/mimiciv/1.0/core
     ```
 Display the number of lines in each data file using a similar loop.
 
+**Solution:**  
+The number of lines in `admissions.csv.gz`, `patients.csv.gz`, and `transfers.csv.gz` are 523741, 382279, 2189536, respectively.
+```{bash}
+for datafile in /mnt/mimiciv/1.0/core/*.gz
+  do
+     echo $datafile:
+     zcat $datafile | wc -l
+  done
+```
+    
 5. Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `sort`, `uniq`, `wc`, and so on.)
+
+**Solution:**
+The first ten lines of `admissions.csv.gz` are shown below.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | head -10 
+```
+There are 523741 rows in this data file, including the header.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | wc -l
+```
+There are 256878 unique patients in this data file. We subtract 1 from what we get in the chunk below because the header `subject_id` is included.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $1}' | sort | uniq | wc -l
+```
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
 
+**Solution:**  
+The possible values taken by `admission_type` are `AMBULATORY OBSERVATION`(7254), `DIRECT EMER.`(21581), `DIRECT OBSERVATION`(19991), `ELECTIVE`(72072), `EU OBSERVATION`(100445), `EW EMER.`(157896), `OBSERVATION ADMIT`(55497), `SURGICAL SAME DAY ADMISSION`(41074), and `URGENT`(47930).  
+The count for each unique value of `admission_type` is noted in the parenthesis beside the value.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $6}' | sort | uniq -c
+```
+The possible values taken by `admission_location` are `AMBULATORY SURGERY TRANSFER`(191), `CLINIC REFERRAL`(10670), `EMERGENCY ROOM`(245744), `INFORMATION NOT AVAILABLE`(379), `INTERNAL TRANSFER TO OR FROM PSYCH`(4467), `PACU`(6067), `PHYSICIAN REFERRAL`(127494), `PROCEDURE SITE`(8449), `TRANSFER FROM HOSPITAL`(39121), `TRANSFER FROM SKILLED NURSING FACILITY`(4063), and `WALK-IN/SELF REFERRAL`(16660).  
+The count for each unique value of `admission_location` is noted in the parenthesis beside the value.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $7}' | sort | uniq -c
+```
+The possible values taken by `insurance` are `Medicaid`(50850), `Medicare`(171360), and `Other`(301530).  
+The count for each unique value of `insurance` is noted in the parenthesis beside the value.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $9}' | sort | uniq -c
+```
+The possible values taken by `ethnicity` are `AMERICAN INDIAN/ALASKA NATIVE`(1535), `ASIAN`(24506), `BLACK/AFRICAN AMERICAN`(80293), `HISPANIC/LATINO`(29823), `OTHER`(26813), `UNABLE TO OBTAIN`(3740), `UNKNOWN`(19400), and `WHITE`(337630).  
+The count for each unique value of `ethnicity` is noted in the parenthesis beside the value.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $12}' | sort | uniq -c
+```
+
 ## Q4. Who's popular in Price and Prejudice
 
-1. You and your friend just have finished reading *Pride and Prejudice* by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <http://www.gutenberg.org/cache/epub/42671/pg42671.txt> and save to your local folder. 
-    ```{bash, eval=FALSE}
+1. You and your friend just have finished reading *Pride and Prejudice* by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <http://www.gutenberg.org/cache/epub/42671/pg42671.txt> and save to your local folder.
+    ```{bash, eval=F}
     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     ```
 Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git. Complete the following loop to tabulate the number of times each of the four characters is mentioned using Linux commands.
-    ```{bash, eval=FALSE}
+    ```{bash, eval=T}
     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
       echo $char:
-      # some commands here
+      grep -o -w  $char pg42671.txt | wc -l
     done
     ```
+**Solution:**  
+The command `wget -nc`allows us to download files on the server. The files downloaded will be saved in the local folder.  
+From the command above, it shows that Elizabeth, Jane, Lydia, Darcy is mentioned 634, 294, 170, 416 times, respectively, in the novel *Pride and Prejudice* by Jane Austen.
 
 2. What's the difference between the following two commands?
-    ```{bash eval=FALSE}
+    ```{bash eval=T}
     echo 'hello, world' > test1.txt
     ```
     and
-    ```{bash eval=FALSE}
+    ```{bash eval=T}
     echo 'hello, world' >> test2.txt
     ```
+**Solution:**  
+If we do the command `echo 'hello, world' > test1.txt`, everything already present in `test1.txt` would have been replaced by `hello, world`.  
+Instead, the command `echo 'hello, world' >> test2.txt` will append `hello, world` to the end of the file `test2.txt`.
+
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
-    ```{bash eval=FALSE}
+    ```{bash eval=F}
     #!/bin/sh
     # Select lines from the middle of a file.
     # Usage: bash middle.sh filename end_line num_lines
     head -n "$2" "$1" | tail -n "$3"
     ```
 Using `chmod` make the file executable by the owner, and run 
-    ```{bash eval=FALSE}
+    ```{bash eval=T}
+    chmod u+x ./middle.sh pg42671.txt
     ./middle.sh pg42671.txt 20 5
     ```
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
 
+**Solution:**  
+The output will be the 16th line to 20th line of the novel *Pride and Prejudice*.  
+The meaning of `"$1"`, `"$2"`, and `"$3"` are the first, second, and third commands after `./middle.sh`, respectively. In this case, they are `file name`, `end of the line (we want to read the file form the first line)`, and `the number of these lines`. We need the first line of the shell script because we have to tell linux to use `sh` to run the following command.
+
 ### Q5. More fun with Linux
 
 Try following commands in Bash and interpret the results: `cal`, `cal 2021`, `cal 9 1752` (anything unusual?), `date`, `hostname`, `arch`, `uname -a`, `uptime`, `who am i`, `who`, `w`, `id`, `last | head`, `echo {con,pre}{sent,fer}{s,ed}`, `time sleep 5`, `history | tail`.
+
+**Solution:**  
+The command `cal` shows the calendar of this month.
+```{bash}
+   cal
+```
+The command `cal 2021` shows the calendar of every month in 2021.
+```{bash}
+   cal 2021
+```
+
+The command `cal 9 1752` shows the calendar of September 1752. It is unusual since 3rd to 13rd September is missing. The reason is shown below by the command `man cal | tail -16 | head -6`.
+```{bash}
+   cal 9 1752
+   man cal | tail -16 | head -6
+```
+The command `date` shows the system date and time (UTC by default).
+```{bash}
+   date
+```
+The command `hostname` shows the computer’s hostname.
+```{bash}
+   hostname
+```
+The command `arch` shows the computer architecture.
+```{bash}
+   arch
+```
+The command `uname -a` shows the kernel name, the system’s node name (hostname), the kernel release, the kernel version, the name of the machine’s hardware name, the name of the operating system, the hardware platform, and the name of the operating system.
+```{bash}
+   uname -a
+```
+The command `uptime` shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.
+```{bash}
+   uptime
+```
+The command `whoami` shows the username of the current user.
+```{bash}
+   whoami
+```
+
+The command `who` shows the login name of the users, the terminal line numbers, the login time of the users in to system, and the remote host name of the user.
+```{bash}
+   who
+```
+The command `w` shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process. 
+```{bash}
+   w
+```
+The command `id` shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.
+```{bash}
+   id
+```
+The command `last | head` shows the first ten lines of the list of all the users logged in and out since the file `/var/log/wtmp` was created.
+```{bash}
+   last | head
+```
+The command `echo {con,pre}{sent,fer}{s,ed}` shows the combination of all possible words formatted by {con,pre}{sent,fer}{s,ed}.
+```{bash}
+   echo {con,pre}{sent,fer}{s,ed}
+```
+The command `time sleep 5` suspends program execution for 5 seconds. 
+```{bash}
+   time sleep 5
+```
+The command `history | tail` shows the last ten lines of the list of the commands entered since the session started.
+```{bash}
+   history | tail
+```
+
