@@ -105,10 +105,10 @@ The first ten lines of `admissions.csv.gz` are shown below.
    cd  /mnt/mimiciv/1.0/core
    zcat admissions.csv.gz | head -10 
 ```
-There are 66155 rows in this data file, including the header.
+There are 523741 rows in this data file, including the header.
 ```{bash}
    cd  /mnt/mimiciv/1.0/core
-   wc -l admissions.csv.gz
+   zcat admissions.csv.gz | wc -l
 ```
 There are 256878 unique patients in this data file. We subtract 1 from what we get in the chunk below because the header `subject_id` is included.
 ```{bash}
@@ -117,6 +117,26 @@ There are 256878 unique patients in this data file. We subtract 1 from what we g
 ```
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
+
+**Solution:**
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $6}' | sort | uniq -c
+```
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $7}' | sort | uniq -c
+```
+
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $9}' | sort | uniq -c
+```
+
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $16}' | sort | uniq -c
+```
 
 ## Q4. Who's popular in Price and Prejudice
 
