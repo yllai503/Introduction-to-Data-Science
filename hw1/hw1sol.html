@@ -291,39 +291,19 @@ pre code {
 ## -rw-r--r--. 1 root root 53014503 Jan  4 21:48 /mnt/mimiciv/1.0/core/transfers.csv.gz</code></pre>
 <p>Display the number of lines in each data file using a similar loop.</p></li>
 </ol>
-<p><strong>Solution:</strong></p>
-<pre class="bash"><code>for datafile in /mnt/mimiciv/1.0/hosp/*.gz
+<p><strong>Solution:</strong><br />
+The number of lines in <code>admissions.csv.gz</code>, <code>patients.csv.gz</code>, and <code>transfers.csv.gz</code> are 523741, 382279, 2189536, respectively.</p>
+<pre class="bash"><code>for datafile in /mnt/mimiciv/1.0/core/*.gz
   do
-     ls -l $datafile
+     echo $datafile:
+     zcat $datafile | wc -l
   done</code></pre>
-<pre><code>## -rw-r--r--. 1 root root 430049 Jan  4 21:51 /mnt/mimiciv/1.0/hosp/d_hcpcs.csv.gz
-## -rw-r--r--. 1 root root 29531152 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/diagnoses_icd.csv.gz
-## -rw-r--r--. 1 root root 863239 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/d_icd_diagnoses.csv.gz
-## -rw-r--r--. 1 root root 579998 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/d_icd_procedures.csv.gz
-## -rw-r--r--. 1 root root 14898 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/d_labitems.csv.gz
-## -rw-r--r--. 1 root root 11684062 Jan  4 21:51 /mnt/mimiciv/1.0/hosp/drgcodes.csv.gz
-## -rw-r--r--. 1 root root 515763427 Jan  4 21:51 /mnt/mimiciv/1.0/hosp/emar.csv.gz
-## -rw-r--r--. 1 root root 476252563 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/emar_detail.csv.gz
-## -rw-r--r--. 1 root root 2098831 Jan  4 21:51 /mnt/mimiciv/1.0/hosp/hcpcsevents.csv.gz
-## -rw-r--r--. 1 root root 2091865786 Jan  4 21:50 /mnt/mimiciv/1.0/hosp/labevents.csv.gz
-## -rw-r--r--. 1 root root 99133381 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/microbiologyevents.csv.gz
-## -rw-r--r--. 1 root root 422874088 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/pharmacy.csv.gz
-## -rw-r--r--. 1 root root 501381155 Jan  4 21:51 /mnt/mimiciv/1.0/hosp/poe.csv.gz
-## -rw-r--r--. 1 root root 24020923 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/poe_detail.csv.gz
-## -rw-r--r--. 1 root root 367041717 Jan  4 21:49 /mnt/mimiciv/1.0/hosp/prescriptions.csv.gz
-## -rw-r--r--. 1 root root 7750325 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/procedures_icd.csv.gz
-## -rw-r--r--. 1 root root 9565293 Jan  4 21:48 /mnt/mimiciv/1.0/hosp/services.csv.gz</code></pre>
-<pre class="bash"><code>for datafile in /mnt/mimiciv/1.0/icu/*.gz
-  do
-    ls -l $datafile
-  done</code></pre>
-<pre><code>## -rw-r--r--. 1 root root 2350783547 Jan  4 21:54 /mnt/mimiciv/1.0/icu/chartevents.csv.gz
-## -rw-r--r--. 1 root root 43296273 Jan  4 21:52 /mnt/mimiciv/1.0/icu/datetimeevents.csv.gz
-## -rw-r--r--. 1 root root 55917 Jan  4 21:52 /mnt/mimiciv/1.0/icu/d_items.csv.gz
-## -rw-r--r--. 1 root root 2848628 Jan  4 21:52 /mnt/mimiciv/1.0/icu/icustays.csv.gz
-## -rw-r--r--. 1 root root 352443512 Jan  4 21:52 /mnt/mimiciv/1.0/icu/inputevents.csv.gz
-## -rw-r--r--. 1 root root 37095672 Jan  4 21:52 /mnt/mimiciv/1.0/icu/outputevents.csv.gz
-## -rw-r--r--. 1 root root 20567368 Jan  4 21:52 /mnt/mimiciv/1.0/icu/procedureevents.csv.gz</code></pre>
+<pre><code>## /mnt/mimiciv/1.0/core/admissions.csv.gz:
+## 523741
+## /mnt/mimiciv/1.0/core/patients.csv.gz:
+## 382279
+## /mnt/mimiciv/1.0/core/transfers.csv.gz:
+## 2189536</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Display the first few lines of <code>admissions.csv.gz</code>. How many rows are in this data file? How many unique patients (identified by <code>subject_id</code>) are in this data file? (Hint: combine Linux commands <code>zcat</code>, <code>head</code>/<code>tail</code>, <code>awk</code>, <code>sort</code>, <code>uniq</code>, <code>wc</code>, and so on.)</li>
 </ol>
@@ -523,7 +503,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 ##        calendar for that month is a bit unusual.</code></pre>
 <p>The command <code>date</code> shows the system date and time (UTC by default).</p>
 <pre class="bash"><code>   date</code></pre>
-<pre><code>## Fri Jan 21 22:47:42 UTC 2022</code></pre>
+<pre><code>## Fri Jan 21 22:55:03 UTC 2022</code></pre>
 <p>The command <code>hostname</code> shows the computer’s hostname.</p>
 <pre class="bash"><code>   hostname</code></pre>
 <pre><code>## biostat-203b-teaching-server</code></pre>
@@ -535,33 +515,29 @@ The command <code>cal</code> shows the calendar of this month.</p>
 <pre><code>## Linux biostat-203b-teaching-server 3.10.0-1160.49.1.el7.x86_64 #1 SMP Tue Nov 30 15:51:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
 <p>The command <code>uptime</code> shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.</p>
 <pre class="bash"><code>   uptime</code></pre>
-<pre><code>##  22:47:42 up 18 days, 22:21,  5 users,  load average: 0.69, 0.46, 0.27</code></pre>
+<pre><code>##  22:55:03 up 18 days, 22:28,  3 users,  load average: 1.73, 0.94, 0.53</code></pre>
 <p>The command <code>whoami</code> shows the username of the current user.</p>
 <pre class="bash"><code>   whoami</code></pre>
 <pre><code>## yllai</code></pre>
 <p>The command <code>who</code> shows the login name of the users, the terminal line numbers, the login time of the users in to system, and the remote host name of the user.</p>
 <pre class="bash"><code>   who</code></pre>
 <pre><code>## tomokiokuno0528 pts/1        2022-01-11 01:13 (42.166.94.34.bc.googleusercontent.com)
-## yuruidong99 pts/2        2022-01-21 21:06 (s-169-232-70-203.resnet.ucla.edu)
 ## tomokiokuno0528 pts/3        2022-01-10 23:43 (42.166.94.34.bc.googleusercontent.com)
-## capj245  pts/13       2022-01-21 03:54 (s-164-67-232-61.resnet.ucla.edu)
-## yuruidong99 pts/10       2022-01-21 21:08 (42.166.94.34.bc.googleusercontent.com)</code></pre>
+## capj245  pts/13       2022-01-21 03:54 (s-164-67-232-61.resnet.ucla.edu)</code></pre>
 <p>The command <code>w</code> shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process.</p>
 <pre class="bash"><code>   w</code></pre>
-<pre><code>##  22:47:42 up 18 days, 22:21,  5 users,  load average: 0.69, 0.46, 0.27
+<pre><code>##  22:55:03 up 18 days, 22:28,  3 users,  load average: 1.73, 0.94, 0.53
 ## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
 ## tomokiok pts/1    42.166.94.34.bc. 11Jan22 10days  0.01s  0.01s -bash
-## yuruidon pts/2    s-169-232-70-203 21:06    1:37m  0.06s  0.03s ssh -i /home/yuruidong99/.ssh/id_rsa yuruidong99@server.ucla-biostat-203b.com
 ## tomokiok pts/3    42.166.94.34.bc. 10Jan22 10days  1.23s  1.05s ssh -i /home/tomokiokuno0528/.ssh/id_rsa tomokiokuno0528@server.ucla-biostat-203b.com
-## capj245  pts/13   s-164-67-232-61. 03:54   18:52m  0.01s  0.01s -bash
-## yuruidon pts/10   42.166.94.34.bc. 21:08    1:37m  0.01s  0.01s -bash</code></pre>
+## capj245  pts/13   s-164-67-232-61. 03:54   18:59m  0.01s  0.01s -bash</code></pre>
 <p>The command <code>id</code> shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.</p>
 <pre class="bash"><code>   id</code></pre>
 <pre><code>## uid=1018(yllai) gid=1020(yllai) groups=1020(yllai) context=system_u:system_r:initrc_t:s0</code></pre>
 <p>The command <code>last | head</code> shows the first ten lines of the list of all the users logged in and out since the file <code>/var/log/wtmp</code> was created.</p>
 <pre class="bash"><code>   last | head</code></pre>
-<pre><code>## yuruidon pts/10       42.166.94.34.bc. Fri Jan 21 21:08   still logged in   
-## yuruidon pts/2        s-169-232-70-203 Fri Jan 21 21:06   still logged in   
+<pre><code>## yuruidon pts/10       42.166.94.34.bc. Fri Jan 21 21:08 - 22:51  (01:42)    
+## yuruidon pts/2        s-169-232-70-203 Fri Jan 21 21:06 - 22:51  (01:45)    
 ## yuruidon pts/10       s-169-232-70-203 Fri Jan 21 20:40 - 21:03  (00:22)    
 ## tokramm  pts/18       76.82.34.63      Fri Jan 21 05:07 - 07:32  (02:25)    
 ## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:58 - 05:02  (00:04)    
@@ -578,7 +554,7 @@ The command <code>cal</code> shows the calendar of this month.</p>
 <pre><code>## 
 ## real 0m5.002s
 ## user 0m0.000s
-## sys  0m0.001s</code></pre>
+## sys  0m0.002s</code></pre>
 <p>The command <code>history | tail</code> shows the last ten lines of the list of the commands entered since the session started.</p>
 <pre class="bash"><code>   history | tail</code></pre>
 </div>

@@ -82,18 +82,13 @@ Those files from MIMIC-IV are too big so that they needed to be compressed. `.cs
     ```
 Display the number of lines in each data file using a similar loop.
 
-**Solution:**
+**Solution:**  
+The number of lines in `admissions.csv.gz`, `patients.csv.gz`, and `transfers.csv.gz` are 523741, 382279, 2189536, respectively.
 ```{bash}
-for datafile in /mnt/mimiciv/1.0/hosp/*.gz
+for datafile in /mnt/mimiciv/1.0/core/*.gz
   do
-     ls -l $datafile
-  done
-```
-    
-```{bash}
-for datafile in /mnt/mimiciv/1.0/icu/*.gz
-  do
-    ls -l $datafile
+     echo $datafile:
+     zcat $datafile | wc -l
   done
 ```
     
