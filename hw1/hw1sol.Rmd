@@ -32,7 +32,7 @@ sessionInfo()
 
 This exercise (and later in this course) uses the [MIMIC-IV data](https://mimic-iv.mit.edu), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Follow the instructions at <https://mimic.mit.edu/docs/gettingstarted/> to (1) complete the CITI `Data or Specimens Only Research` course and (2) obtain the PhysioNet credential for using the MIMIC-IV data. Display the verification links to your completion report and completion certificate here. (Hint: The CITI training takes a couple hours and the PhysioNet credentialing takes a couple days; do not leave it to the last minute.)
 
-**Solution:** Here is the verification link of CITI course <https://www.citiprogram.org/verify/?we89b7cca-0072-414d-aaba-aea012145240-46593790>.
+**Solution:** Here are the verification link of CITI course <https://www.citiprogram.org/verify/?we89b7cca-0072-414d-aaba-aea012145240-46593790>, and the report link of CITI course <https://www.citiprogram.org/verify/?k21bb5d5a-e846-4a9c-8c32-e666926391cf-46593790>.
 The PhysioNet credential for using the MIMIC-IV data is still processing. Below is the screenshot of my credentialing application.
 <p align="center">
   <img src="images/1642705699630.jpg" height="427" width="499">
@@ -156,7 +156,7 @@ Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git
     for char in Elizabeth Jane Lydia Darcy
     do
       echo $char:
-      grep -o -w  $char pg42671.txt | wc -w
+      grep -o -w  $char pg42671.txt | wc -l
     done
     ```
 **Solution:**  
@@ -183,7 +183,6 @@ Instead, the command `echo 'hello, world' >> test2.txt` will append `hello, worl
     # Usage: bash middle.sh filename end_line num_lines
     head -n "$2" "$1" | tail -n "$3"
     ```
-
 Using `chmod` make the file executable by the owner, and run 
     ```{bash eval=T}
     chmod u+x ./middle.sh pg42671.txt
