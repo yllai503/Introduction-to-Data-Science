@@ -155,8 +155,9 @@ Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git
     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
-      echo $char:
+      echo $char: 
       grep -o -w 'Elizabeth' pg42671.txt | wc -w
+      grep -o -w 'Jane' pg42671.txt | wc -w
     done
     ```
 **Solution:**  
@@ -193,3 +194,73 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 ### Q5. More fun with Linux
 
 Try following commands in Bash and interpret the results: `cal`, `cal 2021`, `cal 9 1752` (anything unusual?), `date`, `hostname`, `arch`, `uname -a`, `uptime`, `who am i`, `who`, `w`, `id`, `last | head`, `echo {con,pre}{sent,fer}{s,ed}`, `time sleep 5`, `history | tail`.
+
+**Solution:**  
+The command `cal` shows the calendar of this month.
+```{bash}
+   cal
+```
+The command `cal 2021` shows the calendar of every month in 2021.
+```{bash}
+   cal 2021
+```
+
+The command `cal 9 1752` shows the calendar of September 1752. It is unusual since 3rd to 13rd September is missing. The reason is shown below by the command `man cal | tail -16 | head -6`.
+```{bash}
+   cal 9 1752
+   man cal | tail -16 | head -6
+```
+The command `date` shows the system date and time (UTC by default).
+```{bash}
+   date
+```
+The command `hostname` shows the computer’s hostname.
+```{bash}
+   hostname
+```
+The command `arch` shows the computer architecture.
+```{bash}
+   arch
+```
+The command `uname -a` shows the kernel name, the system’s node name (hostname), the kernel release, the kernel version, the name of the machine’s hardware name, the name of the operating system, the hardware platform, and the name of the operating system.
+```{bash}
+   uname -a
+```
+The command `uptime` shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.
+```{bash}
+   uptime
+```
+The command `whoami` shows the username of the current user.
+```{bash}
+   whoami
+```
+
+The command `who` shows the login name of the users, the terminal line numbers, the login time of the users in to system, and the remote host name of the user.
+```{bash}
+   who
+```
+The command `w` shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process. 
+```{bash}
+   w
+```
+The command `id` shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.
+```{bash}
+   id
+```
+The command `last | head` shows the first ten lines of the list of all the users logged in and out since the file `/var/log/wtmp` was created.
+```{bash}
+   last | head
+```
+The command `echo {con,pre}{sent,fer}{s,ed}` shows the combination of all possible words formatted by {con,pre}{sent,fer}{s,ed}.
+```{bash}
+   echo {con,pre}{sent,fer}{s,ed}
+```
+The command `time sleep 5` suspends program execution for 5 seconds. 
+```{bash}
+   time sleep 5
+```
+The command `history | tail` shows the last ten lines of the list of the commands entered since the session started.
+```{bash}
+   history | tail
+```
+
