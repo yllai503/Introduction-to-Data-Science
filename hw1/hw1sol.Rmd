@@ -94,10 +94,27 @@ for datafile in /mnt/mimiciv/1.0/hosp/*.gz
 for datafile in /mnt/mimiciv/1.0/icu/*.gz
   do
     ls -l $datafile
-   done
+  done
 ```
     
 5. Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `sort`, `uniq`, `wc`, and so on.)
+
+**Solution:**
+The first ten lines of `admissions.csv.gz` are shown below.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | head -10 
+```
+There are 66155 rows in this data file, including the header.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   wc -l admissions.csv.gz
+```
+There are 256878 unique patients in this data file. We subtract 1 from what we get in the chunk below because the header `subject_id` is included.
+```{bash}
+   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F',' '{print $1}' | sort | uniq | wc -l
+```
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
 
