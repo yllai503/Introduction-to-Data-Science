@@ -156,14 +156,12 @@ Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git
     for char in Elizabeth Jane Lydia Darcy
     do
       echo $char: 
-      grep -o -w 'Elizabeth' pg42671.txt | wc -w
-      grep -o -w 'Jane' pg42671.txt | wc -w
+      grep -o -w  $char pg42671.txt | wc -w
     done
     ```
 **Solution:**  
 The command `wget -nc`allows us to download files on the server. The files downloaded will be saved in the local folder.  
-
-
+From the command above, it shows that Elizabeth, Jane, Lydia, Darcy is mentioned 634, 294, 170, 416 times, respectively, in the novel *Pride and Prejudice* by Jane Austen.
 
 2. What's the difference between the following two commands?
     ```{bash eval=T}

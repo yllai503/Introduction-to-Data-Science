@@ -414,13 +414,29 @@ The count for each unique value of <code>ethnicity</code> is noted in the parent
 <pre class="bash"><code>wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
 for char in Elizabeth Jane Lydia Darcy
 do
-  echo $char:
-  # some commands here
-done</code></pre></li>
+  echo $char: 
+  grep -o -w  $char pg42671.txt | wc -w
+done</code></pre>
+<pre><code>## File ‘pg42671.txt’ already there; not retrieving.
+## 
+## Elizabeth:
+## 634
+## Jane:
+## 294
+## Lydia:
+## 170
+## Darcy:
+## 416</code></pre>
+<p><strong>Solution:</strong><br />
+The command <code>wget -nc</code>allows us to download files on the server. The files downloaded will be saved in the local folder.<br />
+From the command above, it shows that Elizabeth, Jane, Lydia, Darcy is mentioned 634, 294, 170, 416 times, respectively, in the novel <em>Pride and Prejudice</em> by Jane Austen.</p></li>
 <li><p>What’s the difference between the following two commands?</p>
 <pre class="bash"><code>echo &#39;hello, world&#39; &gt; test1.txt</code></pre>
 <p>and</p>
-<pre class="bash"><code>echo &#39;hello, world&#39; &gt;&gt; test2.txt</code></pre></li>
+<pre class="bash"><code>echo &#39;hello, world&#39; &gt;&gt; test2.txt</code></pre>
+<p><strong>Solution:</strong><br />
+If we do the command <code>echo &#39;hello, world&#39; &gt; test1.txt</code>, everything already present in <code>test1.txt</code> would have been replaced by <code>hello, world</code>.<br />
+Instead, the command <code>echo &#39;hello, world&#39; &gt;&gt; test2.txt</code> will append <code>hello, world</code> to the end of the file <code>test2.txt</code>.</p></li>
 <li><p>Using your favorite text editor (e.g., <code>vi</code>), type the following and save the file as <code>middle.sh</code>:</p>
 <pre class="bash"><code>#!/bin/sh
 # Select lines from the middle of a file.
@@ -433,6 +449,129 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 <div id="q5.-more-fun-with-linux" class="section level3">
 <h3>Q5. More fun with Linux</h3>
 <p>Try following commands in Bash and interpret the results: <code>cal</code>, <code>cal 2021</code>, <code>cal 9 1752</code> (anything unusual?), <code>date</code>, <code>hostname</code>, <code>arch</code>, <code>uname -a</code>, <code>uptime</code>, <code>who am i</code>, <code>who</code>, <code>w</code>, <code>id</code>, <code>last | head</code>, <code>echo {con,pre}{sent,fer}{s,ed}</code>, <code>time sleep 5</code>, <code>history | tail</code>.</p>
+<p><strong>Solution:</strong><br />
+The command <code>cal</code> shows the calendar of this month.</p>
+<pre class="bash"><code>   cal</code></pre>
+<pre><code>##     January 2022    
+## Su Mo Tu We Th Fr Sa
+##                    1
+##  2  3  4  5  6  7  8
+##  9 10 11 12 13 14 15
+## 16 17 18 19 20 21 22
+## 23 24 25 26 27 28 29
+## 30 31</code></pre>
+<p>The command <code>cal 2021</code> shows the calendar of every month in 2021.</p>
+<pre class="bash"><code>   cal 2021</code></pre>
+<pre><code>##                                2021                               
+## 
+##        January               February                 March       
+## Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+##                 1  2       1  2  3  4  5  6       1  2  3  4  5  6
+##  3  4  5  6  7  8  9    7  8  9 10 11 12 13    7  8  9 10 11 12 13
+## 10 11 12 13 14 15 16   14 15 16 17 18 19 20   14 15 16 17 18 19 20
+## 17 18 19 20 21 22 23   21 22 23 24 25 26 27   21 22 23 24 25 26 27
+## 24 25 26 27 28 29 30   28                     28 29 30 31
+## 31
+##         April                   May                   June        
+## Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+##              1  2  3                      1          1  2  3  4  5
+##  4  5  6  7  8  9 10    2  3  4  5  6  7  8    6  7  8  9 10 11 12
+## 11 12 13 14 15 16 17    9 10 11 12 13 14 15   13 14 15 16 17 18 19
+## 18 19 20 21 22 23 24   16 17 18 19 20 21 22   20 21 22 23 24 25 26
+## 25 26 27 28 29 30      23 24 25 26 27 28 29   27 28 29 30
+##                        30 31
+##         July                  August                September     
+## Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+##              1  2  3    1  2  3  4  5  6  7             1  2  3  4
+##  4  5  6  7  8  9 10    8  9 10 11 12 13 14    5  6  7  8  9 10 11
+## 11 12 13 14 15 16 17   15 16 17 18 19 20 21   12 13 14 15 16 17 18
+## 18 19 20 21 22 23 24   22 23 24 25 26 27 28   19 20 21 22 23 24 25
+## 25 26 27 28 29 30 31   29 30 31               26 27 28 29 30
+## 
+##        October               November               December      
+## Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+##                 1  2       1  2  3  4  5  6             1  2  3  4
+##  3  4  5  6  7  8  9    7  8  9 10 11 12 13    5  6  7  8  9 10 11
+## 10 11 12 13 14 15 16   14 15 16 17 18 19 20   12 13 14 15 16 17 18
+## 17 18 19 20 21 22 23   21 22 23 24 25 26 27   19 20 21 22 23 24 25
+## 24 25 26 27 28 29 30   28 29 30               26 27 28 29 30 31
+## 31</code></pre>
+<p>The command <code>cal 9 1752</code> shows the calendar of September 1752. It is unusual since 3rd to 13rd September is missing. The reason is shown below by the command <code>man cal | tail -16 | head -6</code>.</p>
+<pre class="bash"><code>   cal 9 1752
+   man cal | tail -16 | head -6</code></pre>
+<pre><code>##    September 1752   
+## Su Mo Tu We Th Fr Sa
+##        1  2 14 15 16
+## 17 18 19 20 21 22 23
+## 24 25 26 27 28 29 30
+## 
+## 
+## 
+##        The  Gregorian  Reformation  is assumed to have occurred in 1752 on the
+##        3rd of September. By this time, most countries had recognized the  ref‐
+##        ormation  (although a few did not recognize it until the early 1900&#39;s).
+##        Ten days following that date were eliminated by the reformation, so the
+##        calendar for that month is a bit unusual.</code></pre>
+<p>The command <code>date</code> shows the system date and time (UTC by default).</p>
+<pre class="bash"><code>   date</code></pre>
+<pre><code>## Fri Jan 21 07:24:26 UTC 2022</code></pre>
+<p>The command <code>hostname</code> shows the computer’s hostname.</p>
+<pre class="bash"><code>   hostname</code></pre>
+<pre><code>## biostat-203b-teaching-server</code></pre>
+<p>The command <code>arch</code> shows the computer architecture.</p>
+<pre class="bash"><code>   arch</code></pre>
+<pre><code>## x86_64</code></pre>
+<p>The command <code>uname -a</code> shows the kernel name, the system’s node name (hostname), the kernel release, the kernel version, the name of the machine’s hardware name, the name of the operating system, the hardware platform, and the name of the operating system.</p>
+<pre class="bash"><code>   uname -a</code></pre>
+<pre><code>## Linux biostat-203b-teaching-server 3.10.0-1160.49.1.el7.x86_64 #1 SMP Tue Nov 30 15:51:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
+<p>The command <code>uptime</code> shows how long the system is active. It shows the current time, the amount of time system is in running state, number of users currently logged into, and the load time for the past 1, 5 and 15 minutes respectively.</p>
+<pre class="bash"><code>   uptime</code></pre>
+<pre><code>##  07:24:26 up 18 days,  6:57,  5 users,  load average: 0.68, 0.52, 0.39</code></pre>
+<p>The command <code>whoami</code> shows the username of the current user.</p>
+<pre class="bash"><code>   whoami</code></pre>
+<pre><code>## yllai</code></pre>
+<p>The command <code>who</code> shows the login name of the users, the terminal line numbers, the login time of the users in to system, and the remote host name of the user.</p>
+<pre class="bash"><code>   who</code></pre>
+<pre><code>## tomokiokuno0528 pts/1        2022-01-11 01:13 (42.166.94.34.bc.googleusercontent.com)
+## tomokiokuno0528 pts/3        2022-01-10 23:43 (42.166.94.34.bc.googleusercontent.com)
+## maschepps pts/6        2022-01-17 19:33 (74.213.228.243)
+## capj245  pts/13       2022-01-21 03:54 (s-164-67-232-61.resnet.ucla.edu)
+## tokramm  pts/18       2022-01-21 05:07 (76.82.34.63)</code></pre>
+<p>The command <code>w</code> shows who is logged on and what they are doing. This command shows the information about the users currently on the machine and their processes. The header shows, in this order, the current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes. The following entries are displayed for each user: login name, the tty name, the remote host, login time, idle time, JCPU, PCPU, and the command line of their current process.</p>
+<pre class="bash"><code>   w</code></pre>
+<pre><code>##  07:24:26 up 18 days,  6:57,  5 users,  load average: 0.68, 0.52, 0.39
+## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+## tomokiok pts/1    42.166.94.34.bc. 11Jan22 10days  0.01s  0.01s -bash
+## tomokiok pts/3    42.166.94.34.bc. 10Jan22 10days  1.15s  0.97s ssh -i /home/tomokiokuno0528/.ssh/id_rsa tomokiokuno0528@server.ucla-biostat-203b.com
+## maschepp pts/6    74.213.228.243   Mon19    3days  0.03s  0.03s -bash
+## capj245  pts/13   s-164-67-232-61. 03:54    3:29m  0.01s  0.01s -bash
+## tokramm  pts/18   76.82.34.63      05:07    2:16m  0.01s  0.01s -bash</code></pre>
+<p>The command <code>id</code> shows user name and real user id, finds out the specific Users UID, shows the UID and all groups associated with a user, lists out all the groups a user belongs to, and displays security context of the current user.</p>
+<pre class="bash"><code>   id</code></pre>
+<pre><code>## uid=1018(yllai) gid=1020(yllai) groups=1020(yllai) context=system_u:system_r:initrc_t:s0</code></pre>
+<p>The command <code>last | head</code> shows the first ten lines of the list of all the users logged in and out since the file <code>/var/log/wtmp</code> was created.</p>
+<pre class="bash"><code>   last | head</code></pre>
+<pre><code>## tokramm  pts/18       76.82.34.63      Fri Jan 21 05:07   still logged in   
+## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:58 - 05:02  (00:04)    
+## blei001  pts/18       cpe-76-171-0-146 Fri Jan 21 04:56 - 04:56  (00:00)    
+## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:53 - 04:54  (00:00)    
+## tokramm  pts/18       76.82.34.63      Fri Jan 21 04:31 - 04:53  (00:21)    
+## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:54   still logged in   
+## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:45 - 03:49  (00:04)    
+## capj245  pts/13       s-164-67-232-61. Fri Jan 21 03:36 - 03:38  (00:01)    
+## yuyuanli pts/30       149.142.103.176  Fri Jan 21 01:13 - 01:14  (00:00)    
+## huazhou  pts/7        108-64-58-205.li Fri Jan 21 01:03 - 01:52  (00:48)</code></pre>
+<p>The command <code>echo {con,pre}{sent,fer}{s,ed}</code> shows the combination of all possible words formatted by {con,pre}{sent,fer}{s,ed}.</p>
+<pre class="bash"><code>   echo {con,pre}{sent,fer}{s,ed}</code></pre>
+<pre><code>## consents consented confers confered presents presented prefers prefered</code></pre>
+<p>The command <code>time sleep 5</code> suspends program execution for 5 seconds.</p>
+<pre class="bash"><code>   time sleep 5</code></pre>
+<pre><code>## 
+## real 0m5.001s
+## user 0m0.001s
+## sys  0m0.000s</code></pre>
+<p>The command <code>history | tail</code> shows the last ten lines of the list of the commands entered since the session started.</p>
+<pre class="bash"><code>   history | tail</code></pre>
 </div>
 </div>
 
