@@ -340,10 +340,10 @@ pre code {
 ## 17301855,29732723,2140-06-06 14:23:00,2140-06-08 14:25:00,,ELECTIVE,,HOME,Other,ENGLISH,,WHITE,,,0
 ## 17991012,24298836,2181-07-10 20:28:00,2181-07-12 15:49:00,,ELECTIVE,,HOME,Other,ENGLISH,,WHITE,,,0
 ## 16865435,23216961,2185-07-19 02:12:00,2185-07-21 11:50:00,,ELECTIVE,,HOME,Other,ENGLISH,,WHITE,,,0</code></pre>
-<p>There are 66155 rows in this data file, including the header.</p>
+<p>There are 523741 rows in this data file, including the header.</p>
 <pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
-   wc -l admissions.csv.gz</code></pre>
-<pre><code>## 66155 admissions.csv.gz</code></pre>
+   zcat admissions.csv.gz | wc -l</code></pre>
+<pre><code>## 523741</code></pre>
 <p>There are 256878 unique patients in this data file. We subtract 1 from what we get in the chunk below because the header <code>subject_id</code> is included.</p>
 <pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
    zcat admissions.csv.gz | awk -F&#39;,&#39; &#39;{print $1}&#39; | sort | uniq | wc -l</code></pre>
@@ -351,6 +351,59 @@ pre code {
 <ol start="6" style="list-style-type: decimal">
 <li>What are the possible values taken by each of the variable <code>admission_type</code>, <code>admission_location</code>, <code>insurance</code>, and <code>ethnicity</code>? Also report the count for each unique value of these variables. (Hint: combine Linux commands <code>zcat</code>, <code>head</code>/<code>tail</code>, <code>awk</code>, <code>uniq -c</code>, <code>wc</code>, and so on.)</li>
 </ol>
+<p><strong>Solution:</strong><br />
+The possible values taken by <code>admission_type</code> are <code>AMBULATORY OBSERVATION</code>(7254), <code>DIRECT EMER.</code>(21581), <code>DIRECT OBSERVATION</code>(19991), <code>ELECTIVE</code>(72072), <code>EU OBSERVATION</code>(100445), <code>EW EMER.</code>(157896), <code>OBSERVATION ADMIT</code>(55497), <code>SURGICAL SAME DAY ADMISSION</code>(41074), and <code>URGENT</code>(47930).<br />
+The count for each unique value of <code>admission_type</code> is noted in the parenthesis beside the value.</p>
+<pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F&#39;,&#39; &#39;{print $6}&#39; | sort | uniq -c</code></pre>
+<pre><code>##       1 admission_type
+##    7254 AMBULATORY OBSERVATION
+##   21581 DIRECT EMER.
+##   19991 DIRECT OBSERVATION
+##   72072 ELECTIVE
+##  100445 EU OBSERVATION
+##  157896 EW EMER.
+##   55497 OBSERVATION ADMIT
+##   41074 SURGICAL SAME DAY ADMISSION
+##   47930 URGENT</code></pre>
+<p>The possible values taken by <code>admission_location</code> are <code>AMBULATORY SURGERY TRANSFER</code>(191), <code>CLINIC REFERRAL</code>(10670), <code>EMERGENCY ROOM</code>(245744), <code>INFORMATION NOT AVAILABLE</code>(379), <code>INTERNAL TRANSFER TO OR FROM PSYCH</code>(4467), <code>PACU</code>(6067), <code>PHYSICIAN REFERRAL</code>(127494), <code>PROCEDURE SITE</code>(8449), <code>TRANSFER FROM HOSPITAL</code>(39121), <code>TRANSFER FROM SKILLED NURSING FACILITY</code>(4063), and <code>WALK-IN/SELF REFERRAL</code>(16660).<br />
+The count for each unique value of <code>admission_location</code> is noted in the parenthesis beside the value.</p>
+<pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F&#39;,&#39; &#39;{print $7}&#39; | sort | uniq -c</code></pre>
+<pre><code>##   60435 
+##       1 admission_location
+##     191 AMBULATORY SURGERY TRANSFER
+##   10670 CLINIC REFERRAL
+##  245744 EMERGENCY ROOM
+##     379 INFORMATION NOT AVAILABLE
+##    4467 INTERNAL TRANSFER TO OR FROM PSYCH
+##    6067 PACU
+##  127494 PHYSICIAN REFERRAL
+##    8449 PROCEDURE SITE
+##   39121 TRANSFER FROM HOSPITAL
+##    4063 TRANSFER FROM SKILLED NURSING FACILITY
+##   16660 WALK-IN/SELF REFERRAL</code></pre>
+<p>The possible values taken by <code>insurance</code> are <code>Medicaid</code>(50850), <code>Medicare</code>(171360), and <code>Other</code>(301530).<br />
+The count for each unique value of <code>insurance</code> is noted in the parenthesis beside the value.</p>
+<pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F&#39;,&#39; &#39;{print $9}&#39; | sort | uniq -c</code></pre>
+<pre><code>##       1 insurance
+##   50850 Medicaid
+##  171360 Medicare
+##  301530 Other</code></pre>
+<p>The possible values taken by <code>ethnicity</code> are <code>AMERICAN INDIAN/ALASKA NATIVE</code>(1535), <code>ASIAN</code>(24506), <code>BLACK/AFRICAN AMERICAN</code>(80293), <code>HISPANIC/LATINO</code>(29823), <code>OTHER</code>(26813), <code>UNABLE TO OBTAIN</code>(3740), <code>UNKNOWN</code>(19400), and <code>WHITE</code>(337630).<br />
+The count for each unique value of <code>ethnicity</code> is noted in the parenthesis beside the value.</p>
+<pre class="bash"><code>   cd  /mnt/mimiciv/1.0/core
+   zcat admissions.csv.gz | awk -F&#39;,&#39; &#39;{print $12}&#39; | sort | uniq -c</code></pre>
+<pre><code>##    1535 AMERICAN INDIAN/ALASKA NATIVE
+##   24506 ASIAN
+##   80293 BLACK/AFRICAN AMERICAN
+##       1 ethnicity
+##   29823 HISPANIC/LATINO
+##   26813 OTHER
+##    3740 UNABLE TO OBTAIN
+##   19400 UNKNOWN
+##  337630 WHITE</code></pre>
 </div>
 <div id="q4.-whos-popular-in-price-and-prejudice" class="section level2">
 <h2>Q4. Who’s popular in Price and Prejudice</h2>

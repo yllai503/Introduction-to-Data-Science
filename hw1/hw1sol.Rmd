@@ -118,24 +118,30 @@ There are 256878 unique patients in this data file. We subtract 1 from what we g
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
 
-**Solution:**
+**Solution:**  
+The possible values taken by `admission_type` are `AMBULATORY OBSERVATION`(7254), `DIRECT EMER.`(21581), `DIRECT OBSERVATION`(19991), `ELECTIVE`(72072), `EU OBSERVATION`(100445), `EW EMER.`(157896), `OBSERVATION ADMIT`(55497), `SURGICAL SAME DAY ADMISSION`(41074), and `URGENT`(47930).  
+The count for each unique value of `admission_type` is noted in the parenthesis beside the value.
 ```{bash}
    cd  /mnt/mimiciv/1.0/core
    zcat admissions.csv.gz | awk -F',' '{print $6}' | sort | uniq -c
 ```
+The possible values taken by `admission_location` are `AMBULATORY SURGERY TRANSFER`(191), `CLINIC REFERRAL`(10670), `EMERGENCY ROOM`(245744), `INFORMATION NOT AVAILABLE`(379), `INTERNAL TRANSFER TO OR FROM PSYCH`(4467), `PACU`(6067), `PHYSICIAN REFERRAL`(127494), `PROCEDURE SITE`(8449), `TRANSFER FROM HOSPITAL`(39121), `TRANSFER FROM SKILLED NURSING FACILITY`(4063), and `WALK-IN/SELF REFERRAL`(16660).  
+The count for each unique value of `admission_location` is noted in the parenthesis beside the value.
 ```{bash}
    cd  /mnt/mimiciv/1.0/core
    zcat admissions.csv.gz | awk -F',' '{print $7}' | sort | uniq -c
 ```
-
+The possible values taken by `insurance` are `Medicaid`(50850), `Medicare`(171360), and `Other`(301530).  
+The count for each unique value of `insurance` is noted in the parenthesis beside the value.
 ```{bash}
    cd  /mnt/mimiciv/1.0/core
    zcat admissions.csv.gz | awk -F',' '{print $9}' | sort | uniq -c
 ```
-
+The possible values taken by `ethnicity` are `AMERICAN INDIAN/ALASKA NATIVE`(1535), `ASIAN`(24506), `BLACK/AFRICAN AMERICAN`(80293), `HISPANIC/LATINO`(29823), `OTHER`(26813), `UNABLE TO OBTAIN`(3740), `UNKNOWN`(19400), and `WHITE`(337630).  
+The count for each unique value of `ethnicity` is noted in the parenthesis beside the value.
 ```{bash}
    cd  /mnt/mimiciv/1.0/core
-   zcat admissions.csv.gz | awk -F',' '{print $16}' | sort | uniq -c
+   zcat admissions.csv.gz | awk -F',' '{print $12}' | sort | uniq -c
 ```
 
 ## Q4. Who's popular in Price and Prejudice
