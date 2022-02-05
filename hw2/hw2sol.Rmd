@@ -75,10 +75,30 @@ system(
 ```
 
 1. Import `icustatys.csv.gz` as a tibble `icustays_tble`. 
-
+**Solution:**  
+```{r}
+icustays_tble <- read_csv((str_c(mimic_path, "/icu/icustays.csv.gz")))
+```
 2. How many unique `subject_id`? Can a `subject_id` have multiple ICU stays? 
+**Solution:**  
+```{r}
+icustays_tble %>%
+  distinct(subject_id) %>% 
+  nrow()
+```
+There are 53150 unique `subject_id`s. Since the number is smaller than the rows of this data, a `subject_id` can have multiple ICU stays.
 
 3. For each `subject_id`, let's only keep the first ICU stay in the tibble `icustays_tble`.
+**Solution:**  
+```{r}
+icustays_tble <- 
+  icustays_tble %>%
+  group_by(subject_id) %>% 
+  filter(intime == min(intime)) %>% 
+  ungroup()
+icustays_tble %>% 
+  head()
+```
 
 ## Q3. `admission` data
 
@@ -95,8 +115,20 @@ system(
 ```
 
 1. Import `admissions.csv.gz` as a tibble `admissions_tble`.
+**Solution:**  
+```{r}
+admissions_tble <- read_csv((str_c(mimic_path, "/core/admissions.csv.gz")))
+```
 
-2. Let's only keep the admissions that have a match in `icustays_tble` according to `subject_id` and `hadmi_id`.
+2. Let's only keep the admissions that have a match in `icustays_tble` according to `subject_id` and `hadm_id`.
+**Solution:**  
+```{r}
+admissions_tble <- 
+  admissions_tble %>% 
+  semi_join(icustays_tble, by = c("subject_id","hadm_id"))
+admissions_tble %>% 
+  head()
+```
 
 3. Summarize the following variables by graphics. 
 
@@ -105,6 +137,58 @@ system(
 - admission month day  
 - admission week day  
 - admission hour (anything unusual?)  
+**Solution:**  
+The distribution of the admission year are shown below as the bar chart.
+```{r}
+admissions_tble$admittime %>% 
+  year() %>% 
+  as.tibble() %>% 
+  rename(admission_year = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = admission_year)) + 
+  theme_minimal()
+```
+The distribution of the admission month are shown below as the bar chart.
+```{r}
+admissions_tble$admittime %>% 
+  month() %>% 
+  as.tibble() %>% 
+  rename(admission_month = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = admission_month)) + 
+  theme_minimal()
+```
+The distribution of the admission month day are shown below as the bar chart.
+```{r}
+admissions_tble$admittime %>% 
+  mday() %>% 
+  as.tibble() %>% 
+  rename(admission_mday = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = admission_mday)) + 
+  theme_minimal()
+```
+The distribution of the admission week day are shown below as the bar chart.
+```{r}
+admissions_tble$admittime %>% 
+  wday() %>% 
+  as.tibble() %>% 
+  rename(admission_wday = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = admission_wday)) + 
+  theme_minimal()
+```
+The distribution of the admission hour are shown below as the bar chart. In the bar chart, we notice that the patients mostly were admitted to the hospital at night; however, there was a unusual hour - 7 in the morning - when was the time patients got admitted a lot more than the hour before and after that.
+```{r}
+admissions_tble$admittime %>% 
+  hour() %>% 
+  as.tibble() %>% 
+  rename(admission_hour = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = admission_hour)) + 
+  theme_minimal()
+```
+
 
 ## Q4. `patients` data
 
