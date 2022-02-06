@@ -314,7 +314,12 @@ labevents_tble %>%
 4. Summarize the lab measurements by appropriate numerics and graphics. 
 **Solution:** 
 ```{r}
-labevents_tble <-
+labevents_tble %>% 
+  ggplot() + 
+  geom_col(mapping = aes(x = itemid, y = valuenum)) + 
+  theme_minimal()
+labevents_tble$itemid %>%
+  table()
 ```
 
 ## Q6. Vitals from charted events
