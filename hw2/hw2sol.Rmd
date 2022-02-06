@@ -142,7 +142,7 @@ The distribution of the admission year are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
   year() %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(admission_year = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = admission_year)) + 
@@ -152,7 +152,7 @@ The distribution of the admission month are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
   month() %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(admission_month = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = admission_month)) + 
@@ -162,7 +162,7 @@ The distribution of the admission month day are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
   mday() %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(admission_mday = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = admission_mday)) + 
@@ -172,7 +172,7 @@ The distribution of the admission week day are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
   wday() %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(admission_wday = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = admission_wday)) + 
@@ -182,7 +182,7 @@ The distribution of the admission hour are shown below as the bar chart. In the 
 ```{r}
 admissions_tble$admittime %>% 
   hour() %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(admission_hour = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = admission_hour)) + 
@@ -219,7 +219,7 @@ patients_tble %>%
 The distribution of `gender` is shown below. We can see that there are higher numbers of male patients than the numbers of female patients.
 ```{r}
 patients_tble$gender %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(gender = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = gender)) + 
@@ -228,7 +228,7 @@ patients_tble$gender %>%
 The distribution of `anchor_age` is shown below. We can see that there are a lot of 91-year-old patients, which could probably resulted from the data recorded the patients to be 91 years old for those whose ages were 91 and older. We also get the median age of these patients to be 65 years.
 ```{r}
 patients_tble$anchor_age %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   rename(anchor_age = value) %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = anchor_age)) + 
@@ -278,12 +278,44 @@ labevents_tble <- read_csv((str_c(mimic_path, "/hosp/labevents.csv.gz")),
 labevents_tble %>%
   nrow()
 ```
-2. We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), and calcium (50893). Retrieve a subset of `labevents.csv.gz` only containing these items for the patients in `icustays_tble` as a tibble `labevents_tble`. 
+2. We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), and calcium (50893). Retrieve a subset of `labevents_filtered_itemid.csv.gz` only containing these items for the patients in `icustays_tble` as a tibble `labevents_tble`. 
 
-    Hint: `labevents.csv.gz` is a data file too big to be read in by the `read_csv` function in its default setting. Utilize the `col_select` and `lazy` options in the `read_csv` function to reduce the memory burden.
-
+    Hint: `labevents.csv.gz` is a data file too big to be read in by the `read_csv` function in its default setting. Utilize the `col_select` and `lazy` options in the `read_csv` function to reduce the memory burden.  
+    
+**Solution:** 
+```{r}
+labevents_tble <- 
+  read_csv((str_c(mimic_path, "/hosp/labevents_filtered_itemid.csv.gz")),
+           col_select = c(subject_id,itemid,charttime,valuenum),
+           col_types = cols_only(subject_id = col_double(),
+                                 itemid = col_double(),
+                                 charttime = col_datetime(),
+                                 valuenum = col_double()),
+           lazy = TRUE) %>% 
+  semi_join(icustays_tble, by = "subject_id") %>% 
+  filter(itemid == 50912 | 50971 | 50983 | 50902 | 50882 | 
+           51221 | 51301 | 50931 | 50960 | 50893)
+labevents_tble %>% 
+  head()
+```                                
 3. Further restrict `labevents_tble` to the first lab measurement during the ICU stay. 
+**Solution:** 
+```{r}
+labevents_tble <-
+  left_join(labevents_tble, icustays_tble, by = c("subject_id")) %>% 
+  select(1:4, intime) %>% 
+  group_by(subject_id) %>% 
+  filter(charttime >= intime) %>% 
+  filter(charttime == min(charttime)) %>% 
+  ungroup()
+labevents_tble %>% 
+  head()
+```
 4. Summarize the lab measurements by appropriate numerics and graphics. 
+**Solution:** 
+```{r}
+labevents_tble <-
+```
 
 ## Q6. Vitals from charted events
 
