@@ -205,9 +205,37 @@ system(
 ```
 
 1. Import `patients.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/core/patients/>) as a tibble `patients_tble` and only keep the patients who have a match in `icustays_tble` (according to `subject_id`).
-
+**Solution:**  
+```{r}
+patients_tble <- read_csv((str_c(mimic_path, "/core/patients.csv.gz")))
+patients_tble <- 
+  patients_tble %>% 
+  semi_join(icustays_tble, by = "subject_id")
+patients_tble %>% 
+  head()
+```
 2. Summarize variables `gender` and `anchor_age`, and explain any patterns you see.
-
+**Solution:**  
+The distribution of `gender` is shown below. We can see that there are higher numbers of male patients than the numbers of female patients.
+```{r}
+patients_tble$gender %>% 
+  as.tibble() %>% 
+  rename(gender = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = gender)) + 
+  theme_minimal()
+```
+The distribution of `anchor_age` is shown below. We can see that there are a lot of 91-year-old patients, which could probably resulted from the data recorded the patients to be 91 years old for those whose ages were 91 and older. We also get the median age of these patients to be 65 years.
+```{r}
+patients_tble$anchor_age %>% 
+  as.tibble() %>% 
+  rename(anchor_age = value) %>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = anchor_age)) + 
+  theme_minimal()
+patients_tble$anchor_age %>% 
+  median()
+```
 ## Q5. Lab results
 
 `labevents.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/hosp/labevents/>) contains all laboratory measurements for patients. The first 10 lines are
