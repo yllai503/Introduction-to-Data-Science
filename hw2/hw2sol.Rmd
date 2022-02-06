@@ -261,8 +261,23 @@ system(
 )
 ```
 
-1. Find how many rows are in `labevents.csv.gz`.
-
+1. Find how many rows are in `labevents.csv.gz`.  
+**Solution:** 
+There are 122,103,667 rows in `labevents.csv.gz`.
+```{r}
+labevents_tble <- read_csv((str_c(mimic_path, "/hosp/labevents.csv.gz")),
+                           col_select = c(subject_id,
+                                          itemid,
+                                          charttime,
+                                          valuenum),
+                           col_types = cols_only(subject_id = col_double(),
+                                                 itemid = col_double(),
+                                                 charttime = col_datetime(),
+                                                 valuenum = col_double()),
+                           lazy = TRUE)
+labevents_tble %>%
+  nrow()
+```
 2. We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), and calcium (50893). Retrieve a subset of `labevents.csv.gz` only containing these items for the patients in `icustays_tble` as a tibble `labevents_tble`. 
 
     Hint: `labevents.csv.gz` is a data file too big to be read in by the `read_csv` function in its default setting. Utilize the `col_select` and `lazy` options in the `read_csv` function to reduce the memory burden.
