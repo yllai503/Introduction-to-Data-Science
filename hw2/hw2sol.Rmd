@@ -1,6 +1,6 @@
 ---
 title: "Biostat 203B Homework 2"
-subtitle: Due Feb 6 @ 11:59PM
+subtitle: Due Feb 8 @ 11:59PM
 author: Yenlin Lai
 output: 
   html_document:
@@ -314,12 +314,17 @@ labevents_tble %>%
 4. Summarize the lab measurements by appropriate numerics and graphics. 
 **Solution:** 
 ```{r}
-labevents_tble %>% 
+labevents_tble <- 
+  labevents_tble%>%
+  mutate(itemid = as.factor(itemid))
+labevents_tble%>% 
   ggplot() + 
-  geom_col(mapping = aes(x = itemid, y = valuenum)) + 
+  geom_bar(mapping = aes(x = itemid)) + 
   theme_minimal()
-labevents_tble$itemid %>%
-  table()
+labevents_tble %>%
+  group_by(itemid) %>% 
+  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE),
+            sum_valuenum = sum(valuenum, na.rm = TRUE))
 ```
 
 ## Q6. Vitals from charted events
@@ -350,13 +355,16 @@ system(
 ```{r}
 chartevents_tble <- 
   read_csv((str_c(mimic_path, "/icu/chartevents_filtered_itemid.csv.gz")),
-           col_select = c(subject_id,itemid,charttime,valuenum),
+           col_select = c(subject_id, hadm_id, stay_id, 
+                          itemid, charttime, valuenum),
            col_types = cols_only(subject_id = col_double(),
+                                 hadm_id = col_double(),
+                                 stay_id = col_double(),
                                  itemid = col_double(),
                                  charttime = col_datetime(),
                                  valuenum = col_double()),
            lazy = TRUE) %>% 
-  semi_join(icustays_tble, by = "subject_id") %>% 
+  semi_join(icustays_tble, by = c("subject_id","hadm_id","stay_id")) %>% 
   filter(itemid == 220045 | 220181 | 220179 | 223761 | 220210)
 chartevents_tble %>% 
   head()
@@ -365,8 +373,9 @@ chartevents_tble %>%
 **Solution:** 
 ```{r}
 chartevents_tble <-
-  left_join(chartevents_tble, icustays_tble, by = c("subject_id")) %>% 
-  select(1:4, intime) %>% 
+  left_join(chartevents_tble, icustays_tble, 
+            by = c("subject_id","hadm_id","stay_id")) %>% 
+  select(1:6, intime) %>% 
   group_by(subject_id) %>% 
   filter(charttime >= intime) %>% 
   filter(charttime == min(charttime)) %>% 
@@ -375,6 +384,21 @@ chartevents_tble %>%
   head()
 ```
 3. Summarize these vital measurements by appropriate numerics and graphics. 
+**Solution:** 
+```{r}
+chartevents_tble <- 
+  chartevents_tble%>%
+  mutate(itemid = as.factor(itemid))
+chartevents_tble%>% 
+  ggplot() + 
+  geom_bar(mapping = aes(x = itemid)) + 
+  theme_minimal()
+chartevents_tble %>%
+  group_by(itemid) %>% 
+  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE),
+            sum_valuenum = sum(valuenum, na.rm = TRUE))
+```
+
 
 ## Q7. Putting things together
 
