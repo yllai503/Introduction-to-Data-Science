@@ -488,7 +488,27 @@ and columns contain at least following variables
 - first lab measurements during ICU stay  
 - first vital measurements during ICU stay
 - an indicator variable `thirty_day_mort` whether the patient died within 30 days of hospital admission (30 day mortality)
-
+**Solution:**  
+```{r}
+labevents_tble_merge <- 
+  labevents_tble_wide %>% 
+  select(-(charttime:intime))
+chartevents_tble_merge <- 
+  chartevents_tble_wide %>% 
+  select(-hadm_id, -(charttime:intime))
+mimic_icu_cohort <-
+  icustays_tble %>% 
+  left_join(admissions_tble, by = c("subject_id", "hadm_id")) %>% 
+  left_join(patients_tble, by = "subject_id") %>% 
+  left_join(labevents_tble_merge, by = "subject_id") %>%
+  left_join(chartevents_tble_merge, by = c("subject_id", "stay_id")) %>% 
+  mutate(age_admission = year(admittime) + anchor_age - anchor_year) %>% 
+  filter(age_admission > 18) %>% 
+  mutate(thirty_day_mort = ifelse((deathtime - admittime) <= 43200, 
+                                  "Yes", "No")) %>%
+  mutate(thirty_day_mort = replace_na(thirty_day_mort, "No")) %>% 
+  print(width = Inf)
+```
 ## Q8. Exploratory data analysis (EDA)
 
 Summarize following information using appropriate numerics or graphs.
