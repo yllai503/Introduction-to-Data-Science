@@ -444,6 +444,7 @@ chartevents_tble <-
 chartevents_tble %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = itemid)) + 
+  scale_x_discrete(labels = abbreviate) +
   theme_minimal()
 chartevents_tble %>%
   group_by(itemid) %>% 
@@ -514,7 +515,41 @@ mimic_icu_cohort <-
 Summarize following information using appropriate numerics or graphs.
 
 - `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)
+```{r}
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(x = ethnicity, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") + 
+  scale_x_discrete(labels = abbreviate) + 
+  labs(fill = "30 day mortality", x = "Ethnicity") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(x = language, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") +
+  labs(fill = "30 day mortality", x = "Language") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(x = insurance, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") + 
+  labs(fill = "30 day mortality", x = "Insurance") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(x = marital_status, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") + 
+  labs(fill = "30 day mortality", x = "Marital Status") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(x = gender, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") + 
+  labs(fill = "30 day mortality", x = "Gender") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = age_admission, x = thirty_day_mort, fill = "red")) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Age at Hospital Admission") +
+  theme_minimal() +
+  theme(legend.position = "none")
 
+```
 - `thirty_day_mort` vs first lab measurements
 
 - `thirty_day_mort` vs first vital measurements
