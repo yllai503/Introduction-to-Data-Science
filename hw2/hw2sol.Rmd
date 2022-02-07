@@ -515,44 +515,423 @@ mimic_icu_cohort <-
 Summarize following information using appropriate numerics or graphs.
 
 - `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)
+**Solution:**  
 ```{r}
 mimic_icu_cohort %>% 
-  ggplot(mapping = aes(x = ethnicity, fill = thirty_day_mort)) +
+  ggplot(mapping = aes(y = ethnicity, fill = thirty_day_mort)) +
   geom_bar(position="dodge") + 
-  scale_x_discrete(labels = abbreviate) + 
-  labs(fill = "30 day mortality", x = "Ethnicity") +
+  labs(fill = "30 day mortality", y = "Ethnicity") +
   theme_minimal()
+mimic_icu_cohort %>% 
+  group_by(ethnicity) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(x = language, fill = thirty_day_mort)) +
   geom_bar(position="dodge") +
   labs(fill = "30 day mortality", x = "Language") +
   theme_minimal()
 mimic_icu_cohort %>% 
+  group_by(language) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+
+
+mimic_icu_cohort %>% 
   ggplot(mapping = aes(x = insurance, fill = thirty_day_mort)) +
   geom_bar(position="dodge") + 
   labs(fill = "30 day mortality", x = "Insurance") +
   theme_minimal()
+mimic_icu_cohort %>% 
+  group_by(insurance) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+
+
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(x = marital_status, fill = thirty_day_mort)) +
   geom_bar(position="dodge") + 
   labs(fill = "30 day mortality", x = "Marital Status") +
   theme_minimal()
 mimic_icu_cohort %>% 
+  group_by(marital_status) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+
+
+mimic_icu_cohort %>% 
   ggplot(mapping = aes(x = gender, fill = thirty_day_mort)) +
   geom_bar(position="dodge") + 
   labs(fill = "30 day mortality", x = "Gender") +
   theme_minimal()
 mimic_icu_cohort %>% 
-  ggplot(mapping = aes(y = age_admission, x = thirty_day_mort, fill = "red")) +
+  group_by(gender) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = age_admission,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
   geom_boxplot() + 
   labs(x = "30 day mortality", y = "Age at Hospital Admission") +
   theme_minimal() +
   theme(legend.position = "none")
-
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(age_admission, na.rm = TRUE),
+            standard_deviation = sd(age_admission, na.rm = TRUE),
+            min = min(age_admission),
+            Q1 = quantile(age_admission, 0.25),
+            median = median(age_admission, na.rm = TRUE),
+            Q3 = quantile(age_admission, 0.75),
+            max = max(age_admission))
 ```
 - `thirty_day_mort` vs first lab measurements
+**Solution:**  
+```{r warning = FALSE}
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = bicarbonate,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Bicarbonate") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(bicarbonate, na.rm = TRUE),
+            standard_deviation = sd(bicarbonate, na.rm = TRUE),
+            min = min(bicarbonate),
+            Q1 = quantile(bicarbonate, 0.25),
+            median = median(bicarbonate, na.rm = TRUE),
+            Q3 = quantile(bicarbonate, 0.75),
+            max = max(bicarbonate))
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = chloride,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Chloride") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(chloride, na.rm = TRUE),
+            standard_deviation = sd(chloride, na.rm = TRUE),
+            min = min(chloride),
+            Q1 = quantile(chloride, 0.25),
+            median = median(chloride, na.rm = TRUE),
+            Q3 = quantile(chloride, 0.75),
+            max = max(chloride))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = creatinine,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Creatinine") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(creatinine, na.rm = TRUE),
+            standard_deviation = sd(creatinine, na.rm = TRUE),
+            min = min(creatinine),
+            Q1 = quantile(creatinine, 0.25),
+            median = median(creatinine, na.rm = TRUE),
+            Q3 = quantile(creatinine, 0.75),
+            max = max(creatinine))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = potassium,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Potassium") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(potassium, na.rm = TRUE),
+            standard_deviation = sd(potassium, na.rm = TRUE),
+            min = min(potassium),
+            Q1 = quantile(potassium, 0.25),
+            median = median(potassium, na.rm = TRUE),
+            Q3 = quantile(potassium, 0.75),
+            max = max(potassium))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = sodium,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Sodium") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(sodium, na.rm = TRUE),
+            standard_deviation = sd(sodium, na.rm = TRUE),
+            min = min(sodium),
+            Q1 = quantile(sodium, 0.25),
+            median = median(sodium, na.rm = TRUE),
+            Q3 = quantile(sodium, 0.75),
+            max = max(sodium))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = hematocrit,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Hematocrit") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(hematocrit, na.rm = TRUE),
+            standard_deviation = sd(hematocrit, na.rm = TRUE),
+            min = min(hematocrit),
+            Q1 = quantile(hematocrit, 0.25),
+            median = median(hematocrit, na.rm = TRUE),
+            Q3 = quantile(hematocrit, 0.75),
+            max = max(hematocrit))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y =`white blood cell count`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "White Blood Cell Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`white blood cell count`, na.rm = TRUE),
+            standard_deviation = sd(`white blood cell count`, na.rm = TRUE),
+            min = min(`white blood cell count`),
+            Q1 = quantile(`white blood cell count`, 0.25),
+            median = median(`white blood cell count`, na.rm = TRUE),
+            Q3 = quantile(`white blood cell count`, 0.75),
+            max = max(`white blood cell count`))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = calcium,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Calcium") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(calcium, na.rm = TRUE),
+            standard_deviation = sd(calcium, na.rm = TRUE),
+            min = min(calcium),
+            Q1 = quantile(calcium, 0.25),
+            median = median(calcium, na.rm = TRUE),
+            Q3 = quantile(calcium, 0.75),
+            max = max(calcium))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = magnesium,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Magnesium") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(magnesium, na.rm = TRUE),
+            standard_deviation = sd(magnesium, na.rm = TRUE),
+            min = min(magnesium),
+            Q1 = quantile(magnesium, 0.25),
+            median = median(magnesium, na.rm = TRUE),
+            Q3 = quantile(magnesium, 0.75),
+            max = max(magnesium))
+
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = glucose,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Glucose") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(glucose, na.rm = TRUE),
+            standard_deviation = sd(glucose, na.rm = TRUE),
+            min = min(glucose),
+            Q1 = quantile(glucose, 0.25),
+            median = median(glucose, na.rm = TRUE),
+            Q3 = quantile(glucose, 0.75),
+            max = max(glucose))
+```
 
 - `thirty_day_mort` vs first vital measurements
+**Solution:**  
+```{r}
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = `heart rate`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Heart Rate") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`heart rate`, na.rm = TRUE),
+            standard_deviation = sd(`heart rate`, na.rm = TRUE),
+            min = min(`heart rate`),
+            Q1 = quantile(`heart rate`, 0.25),
+            median = median(`heart rate`, na.rm = TRUE),
+            Q3 = quantile(`heart rate`, 0.75),
+            max = max(`heart rate`))
 
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = `systolic non-invasive blood pressure`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Systolic Non-invasive Blood Pressure") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`systolic non-invasive blood pressure`,
+                        na.rm = TRUE),
+            standard_deviation = sd(`systolic non-invasive blood pressure`,
+                                    na.rm = TRUE),
+            min = min(`systolic non-invasive blood pressure`),
+            Q1 = quantile(`systolic non-invasive blood pressure`, 0.25),
+            median = median(`systolic non-invasive blood pressure`,
+                            na.rm = TRUE),
+            Q3 = quantile(`systolic non-invasive blood pressure`, 0.75),
+            max = max(glucose))
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = `mean non-invasive blood pressure`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Mean Non-invasive Blood Pressure") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`mean non-invasive blood pressure`,
+                        na.rm = TRUE),
+            standard_deviation = sd(`mean non-invasive blood pressure`,
+                                    na.rm = TRUE),
+            min = min(`mean non-invasive blood pressure`),
+            Q1 = quantile(`mean non-invasive blood pressure`, 0.25),
+            median = median(`mean non-invasive blood pressure`,
+                            na.rm = TRUE),
+            Q3 = quantile(`mean non-invasive blood pressure`, 0.75),
+            max = max(`mean non-invasive blood pressure`))
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = `respiratory rate`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Respiratory Rate") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`respiratory rate`, na.rm = TRUE),
+            standard_deviation = sd(`respiratory rate`, na.rm = TRUE),
+            min = min(`respiratory rate`),
+            Q1 = quantile(`respiratory rate`, 0.25),
+            median = median(`respiratory rate`, na.rm = TRUE),
+            Q3 = quantile(`respiratory rate`, 0.75),
+            max = max(`respiratory rate`))
+
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = `body temperature in Fahrenheit`,
+                       x = thirty_day_mort,
+                       fill = thirty_day_mort)) +
+  geom_boxplot() + 
+  labs(x = "30 day mortality", y = "Body Temperature in Fahrenheit") +
+  theme_minimal() +
+  theme(legend.position = "none")
+mimic_icu_cohort %>% 
+  group_by(thirty_day_mort) %>% 
+  summarise(n = n(),
+            mean = mean(`body temperature in Fahrenheit`,
+                        na.rm = TRUE),
+            standard_deviation = sd(`body temperature in Fahrenheit`, 
+                                    na.rm = TRUE),
+            min = min(`body temperature in Fahrenheit`),
+            Q1 = quantile(`body temperature in Fahrenheit`, 0.25),
+            median = median(`body temperature in Fahrenheit`, 
+                            na.rm = TRUE),
+            Q3 = quantile(`body temperature in Fahrenheit`, 0.75),
+            max = max(`body temperature in Fahrenheit`))
+```
 - `thirty_day_mort` vs first ICU unit
-
+**Solution:**  
+```{r}
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = first_careunit, x = thirty_day_mort)) +
+  geom_count() + 
+  labs(y = "First ICU Unit", x = "30 day mortality") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  ggplot(mapping = aes(y = first_careunit, fill = thirty_day_mort)) +
+  geom_bar(position="dodge") + 
+  labs(fill = "30 day mortality", y = "First ICU Unit") +
+  theme_minimal()
+mimic_icu_cohort %>% 
+  group_by(first_careunit) %>% 
+  summarise(n = n(),
+            `Died within 30 days` = sum(thirty_day_mort == "Yes"),
+            Proportion_Yes = `Died within 30 days` / n,
+            `Did not die within 30 days` = sum(thirty_day_mort == "No"),
+            Proportion_No = `Did not die within 30 days` / n) 
+```
