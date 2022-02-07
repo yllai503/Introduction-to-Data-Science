@@ -311,22 +311,69 @@ labevents_tble <-
 labevents_tble %>% 
   head()
 ```
-4. Summarize the lab measurements by appropriate numerics and graphics. 
-**Solution:** 
+4. Summarize the lab measurements by appropriate numeric and graphics. 
+**Solution:**  
+The bar plot of the lab measurements and the corresponding mean of value cast of each measurements.
 ```{r}
 labevents_tble <- 
-  labevents_tble%>%
-  mutate(itemid = as.factor(itemid))
+labevents_tble %>% 
+  mutate(itemid = recode(itemid, "50912" = "creatinine",
+                         "50971" = "potassium", 
+                         "50983" = "sodium",
+                         "50902" = "chloride",
+                         "50882" = "bicarbonate",
+                         "51221" = "hematocrit",
+                         "51301" = "white blood cell count",
+                         "50931" = "glucose",
+                         "50960" = "magnesium",
+                         "50893" = "calcium"))
 labevents_tble%>% 
   ggplot() + 
   geom_bar(mapping = aes(x = itemid)) + 
   theme_minimal()
 labevents_tble %>%
   group_by(itemid) %>% 
-  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE),
-            sum_valuenum = sum(valuenum, na.rm = TRUE))
+  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE))
 ```
-
+The histograms of each lab measurements are shown below. We can notice that a lot of outliers exist in some variables: `creatinine`, `white blood cell count`, `calcium`, `magnesium`, and `glucose`, and make distributions of these variables severely right skewed. We may want to examine the data further, and decide whether excluding these outliers or doing transformation to better evaluate our data.
+```{r, warning = FALSE, message = FALSE}
+labevents_tble_wide <- 
+labevents_tble %>% 
+  pivot_wider(names_from = itemid, values_from = valuenum, values_fn = mean)
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = bicarbonate)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = calcium)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = chloride)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = creatinine)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = glucose)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = magnesium)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = potassium)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = sodium)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = hematocrit)) +
+  geom_histogram()
+labevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `white blood cell count`)) +
+  geom_histogram()
+labevents_tble_wide %>%
+  select(-(subject_id:intime)) %>% 
+  summary()
+```
 ## Q6. Vitals from charted events
 
 `chartevents.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/icu/chartevents/>) contains all the charted data available for a patient. During their ICU stay, the primary repository of a patient’s information is their electronic chart. The `itemid` variable indicates a single measurement type in the database. The `value` variable is the value measured for `itemid`. The first 10 lines of `chartevents.csv.gz` are
@@ -384,19 +431,23 @@ chartevents_tble %>%
   head()
 ```
 3. Summarize these vital measurements by appropriate numerics and graphics. 
-**Solution:** 
+**Solution:**  
+The bar plot of the vital measurements and the corresponding mean of value cast of each measurements.
 ```{r}
 chartevents_tble <- 
-  chartevents_tble%>%
-  mutate(itemid = as.factor(itemid))
-chartevents_tble%>% 
+chartevents_tble %>% 
+  mutate(itemid = recode(itemid, "220045" = "heart rate",
+                         "220181" = "mean non-invasive blood pressure", 
+                         "220179" = "systolic non-invasive blood pressure",
+                         "223761" = "body temperature in Fahrenheit",
+                         "220210" = "respiratory rate"))
+chartevents_tble %>% 
   ggplot() + 
   geom_bar(mapping = aes(x = itemid)) + 
   theme_minimal()
 chartevents_tble %>%
   group_by(itemid) %>% 
-  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE),
-            sum_valuenum = sum(valuenum, na.rm = TRUE))
+  summarise(mean_valuenum = mean(valuenum, na.rm = TRUE))
 ```
 
 
