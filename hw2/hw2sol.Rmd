@@ -335,10 +335,10 @@ labevents_tble %>%
   group_by(itemid) %>% 
   summarise(mean_valuenum = mean(valuenum, na.rm = TRUE))
 ```
-The histograms of each lab measurements are shown below. We can notice that a lot of outliers exist in some variables: `creatinine`, `white blood cell count`, `calcium`, `magnesium`, and `glucose`, and make distributions of these variables severely right skewed. We may want to examine the data further, and decide whether excluding these outliers or doing transformation to better evaluate our data.
+The histograms of each lab measurements are shown below. We can notice that some outliers exist in some variables: `creatinine`, `white blood cell count`, `calcium`, `magnesium`, and `glucose`, and make distributions of these variables severely right skewed. We may want to examine the data further, and decide whether to exclude these outliers or to do transformation to better evaluate our data.
 ```{r, warning = FALSE, message = FALSE}
 labevents_tble_wide <- 
-labevents_tble %>% 
+  labevents_tble %>% 
   pivot_wider(names_from = itemid, values_from = valuenum, values_fn = mean)
 labevents_tble_wide %>% 
   ggplot(mapping = aes(x = bicarbonate)) +
@@ -435,7 +435,7 @@ chartevents_tble %>%
 The bar plot of the vital measurements and the corresponding mean of value cast of each measurements.
 ```{r}
 chartevents_tble <- 
-chartevents_tble %>% 
+  chartevents_tble %>% 
   mutate(itemid = recode(itemid, "220045" = "heart rate",
                          "220181" = "mean non-invasive blood pressure", 
                          "220179" = "systolic non-invasive blood pressure",
@@ -449,7 +449,30 @@ chartevents_tble %>%
   group_by(itemid) %>% 
   summarise(mean_valuenum = mean(valuenum, na.rm = TRUE))
 ```
-
+The histograms of each vital measurements are shown below. We can notice that some outliers exist in every variables: `heart rate`, `systolic non-invasive blood pressure`, `mean non-invasive blood pressure`, `respiratory rate`, and `body temperature in Fahrenheit`, and make distributions of these variables severely either right or left skewed. We may want to examine the data further, and decide whether to exclude these outliers or to do transformation to better evaluate our data.
+```{r, warning = FALSE, message = FALSE}
+chartevents_tble_wide <- 
+  chartevents_tble %>% 
+  pivot_wider(names_from = itemid, values_from = valuenum, values_fn = mean)
+chartevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `heart rate`)) +
+  geom_histogram()
+chartevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `mean non-invasive blood pressure`)) +
+  geom_histogram()
+chartevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `systolic non-invasive blood pressure`)) +
+  geom_histogram()
+chartevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `body temperature in Fahrenheit`)) +
+  geom_histogram()
+chartevents_tble_wide %>% 
+  ggplot(mapping = aes(x = `respiratory rate`)) +
+  geom_histogram()
+chartevents_tble_wide %>%
+  select(-(subject_id:intime)) %>% 
+  summary()
+```
 
 ## Q7. Putting things together
 
