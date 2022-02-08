@@ -58,7 +58,7 @@ Finally, use `fread` to read `admissions.csv.gz` and print out the system runnin
 ```{r}
 system.time(data_frd <- fread(str_c(mimic_path, "/core/admissions.csv.gz")))
 ```
-We get the different system running time by using three different function to read our data. `fread` is slightly faster than `read_csv`, both of them cost around one to three seconds to read the data. For `read.csv` in base R, it costs 35 seconds, which is the slowest one.
+We get the different system running time by using three different function to read our data. `fread` is slightly faster than `read_csv`, both of them cost around two to four seconds to read the data. For `read.csv` in base R, it costs around 45 seconds, which is the slowest one.
 
 ## Q2. ICU stays
 
@@ -74,12 +74,12 @@ system(
 )
 ```
 
-1. Import `icustatys.csv.gz` as a tibble `icustays_tble`. 
+1. Import `icustatys.csv.gz` as a tibble `icustays_tble`.  
 **Solution:**  
-```{r}
+```{r, warning = FALSE}
 icustays_tble <- read_csv((str_c(mimic_path, "/icu/icustays.csv.gz")))
 ```
-2. How many unique `subject_id`? Can a `subject_id` have multiple ICU stays? 
+2. How many unique `subject_id`? Can a `subject_id` have multiple ICU stays?  
 **Solution:**  
 ```{r}
 icustays_tble %>%
@@ -88,7 +88,7 @@ icustays_tble %>%
 ```
 There are 53150 unique `subject_id`s. Since the number is smaller than the rows of this data, a `subject_id` can have multiple ICU stays.
 
-3. For each `subject_id`, let's only keep the first ICU stay in the tibble `icustays_tble`.
+3. For each `subject_id`, let's only keep the first ICU stay in the tibble `icustays_tble`.  
 **Solution:**  
 ```{r}
 icustays_tble <- 
@@ -97,7 +97,7 @@ icustays_tble <-
   filter(intime == min(intime)) %>% 
   ungroup()
 icustays_tble %>% 
-  head()
+  print(width = Inf)
 ```
 
 ## Q3. `admission` data
@@ -114,20 +114,20 @@ system(
 )
 ```
 
-1. Import `admissions.csv.gz` as a tibble `admissions_tble`.
+1. Import `admissions.csv.gz` as a tibble `admissions_tble`.  
 **Solution:**  
 ```{r}
 admissions_tble <- read_csv((str_c(mimic_path, "/core/admissions.csv.gz")))
 ```
 
-2. Let's only keep the admissions that have a match in `icustays_tble` according to `subject_id` and `hadm_id`.
+2. Let's only keep the admissions that have a match in `icustays_tble` according to `subject_id` and `hadm_id`.  
 **Solution:**  
 ```{r}
 admissions_tble <- 
   admissions_tble %>% 
   semi_join(icustays_tble, by = c("subject_id","hadm_id"))
 admissions_tble %>% 
-  head()
+  print(width = Inf)
 ```
 
 3. Summarize the following variables by graphics. 
@@ -148,6 +148,7 @@ admissions_tble$admittime %>%
   geom_bar(mapping = aes(x = admission_year)) + 
   theme_minimal()
 ```
+
 The distribution of the admission month are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
@@ -158,6 +159,7 @@ admissions_tble$admittime %>%
   geom_bar(mapping = aes(x = admission_month)) + 
   theme_minimal()
 ```
+
 The distribution of the admission month day are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
@@ -168,6 +170,7 @@ admissions_tble$admittime %>%
   geom_bar(mapping = aes(x = admission_mday)) + 
   theme_minimal()
 ```
+
 The distribution of the admission week day are shown below as the bar chart.
 ```{r}
 admissions_tble$admittime %>% 
@@ -178,6 +181,7 @@ admissions_tble$admittime %>%
   geom_bar(mapping = aes(x = admission_wday)) + 
   theme_minimal()
 ```
+
 The distribution of the admission hour are shown below as the bar chart. In the bar chart, we notice that the patients mostly were admitted to the hospital at night; however, there was a unusual hour - 7 in the morning - when was the time patients got admitted a lot more than the hour before and after that.
 ```{r}
 admissions_tble$admittime %>% 
@@ -204,7 +208,7 @@ system(
 )
 ```
 
-1. Import `patients.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/core/patients/>) as a tibble `patients_tble` and only keep the patients who have a match in `icustays_tble` (according to `subject_id`).
+1. Import `patients.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/core/patients/>) as a tibble `patients_tble` and only keep the patients who have a match in `icustays_tble` (according to `subject_id`).  
 **Solution:**  
 ```{r}
 patients_tble <- read_csv((str_c(mimic_path, "/core/patients.csv.gz")))
@@ -214,7 +218,8 @@ patients_tble <-
 patients_tble %>% 
   head()
 ```
-2. Summarize variables `gender` and `anchor_age`, and explain any patterns you see.
+
+2. Summarize variables `gender` and `anchor_age`, and explain any patterns you see.  
 **Solution:**  
 The distribution of `gender` is shown below. We can see that there are higher numbers of male patients than the numbers of female patients.
 ```{r}
@@ -225,6 +230,7 @@ patients_tble$gender %>%
   geom_bar(mapping = aes(x = gender)) + 
   theme_minimal()
 ```
+
 The distribution of `anchor_age` is shown below. We can see that there are a lot of 91-year-old patients, which could probably resulted from the data recorded the patients to be 91 years old for those whose ages were 91 and older. We also get the median age of these patients to be 65 years.
 ```{r}
 patients_tble$anchor_age %>% 
@@ -261,20 +267,19 @@ system(
 )
 ```
 
-1. Find how many rows are in `labevents.csv.gz`.  
+1. Find how many rows are in `labevents_filtered_itemid.csv.gz`.  
 **Solution:** 
-There are 122,103,667 rows in `labevents.csv.gz`.
+There are 30,198,826 rows in `labevents_filtered_itemid.csv.gz`. 
+(There are 122,103,667 rows in `labevents.csv.gz`, for the original data set. The code is not shown because it takes too long to run.)
 ```{r}
-labevents_tble <- read_csv((str_c(mimic_path, "/hosp/labevents.csv.gz")),
-                           col_select = c(subject_id,
-                                          itemid,
-                                          charttime,
-                                          valuenum),
-                           col_types = cols_only(subject_id = col_double(),
-                                                 itemid = col_double(),
-                                                 charttime = col_datetime(),
-                                                 valuenum = col_double()),
-                           lazy = TRUE)
+labevents_tble <- 
+  read_csv((str_c(mimic_path, "/hosp/labevents_filtered_itemid.csv.gz")),
+           col_select = c(subject_id,itemid,charttime,valuenum),
+           col_types = cols_only(subject_id = col_double(),
+                                 itemid = col_double(),
+                                 charttime = col_datetime(),
+                                 valuenum = col_double()),
+           lazy = TRUE)
 labevents_tble %>%
   nrow()
 ```
@@ -298,7 +303,7 @@ labevents_tble <-
 labevents_tble %>% 
   head()
 ```                                
-3. Further restrict `labevents_tble` to the first lab measurement during the ICU stay. 
+3. Further restrict `labevents_tble` to the first lab measurement during the ICU stay.  
 **Solution:** 
 ```{r}
 labevents_tble <-
@@ -311,7 +316,7 @@ labevents_tble <-
 labevents_tble %>% 
   head()
 ```
-4. Summarize the lab measurements by appropriate numeric and graphics. 
+4. Summarize the lab measurements by appropriate numeric and graphics.   
 **Solution:**  
 The bar plot of the lab measurements and the corresponding mean of value cast of each measurements.
 ```{r}
@@ -329,7 +334,7 @@ labevents_tble %>%
                          "50893" = "calcium"))
 labevents_tble%>% 
   ggplot() + 
-  geom_bar(mapping = aes(x = itemid)) + 
+  geom_bar(mapping = aes(y = itemid)) + 
   theme_minimal()
 labevents_tble %>%
   group_by(itemid) %>% 
@@ -416,7 +421,7 @@ chartevents_tble <-
 chartevents_tble %>% 
   head()
 ```            
-2. Further restrict `chartevents_tble` to the first vital measurement during the ICU stay. 
+2. Further restrict `chartevents_tble` to the first vital measurement during the ICU stay.   
 **Solution:** 
 ```{r}
 chartevents_tble <-
@@ -428,9 +433,9 @@ chartevents_tble <-
   filter(charttime == min(charttime)) %>% 
   ungroup()
 chartevents_tble %>% 
-  head()
+  print(width = Inf)
 ```
-3. Summarize these vital measurements by appropriate numerics and graphics. 
+3. Summarize these vital measurements by appropriate numerics and graphics.  
 **Solution:**  
 The bar plot of the vital measurements and the corresponding mean of value cast of each measurements.
 ```{r}
@@ -443,8 +448,7 @@ chartevents_tble <-
                          "220210" = "respiratory rate"))
 chartevents_tble %>% 
   ggplot() + 
-  geom_bar(mapping = aes(x = itemid)) + 
-  scale_x_discrete(labels = abbreviate) +
+  geom_bar(mapping = aes(y = itemid)) + 
   theme_minimal()
 chartevents_tble %>%
   group_by(itemid) %>% 
@@ -514,7 +518,7 @@ mimic_icu_cohort <-
 
 Summarize following information using appropriate numerics or graphs.
 
-- `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)
+- `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)  
 **Solution:**  
 ```{r}
 mimic_icu_cohort %>% 
@@ -605,7 +609,7 @@ mimic_icu_cohort %>%
             Q3 = quantile(age_admission, 0.75),
             max = max(age_admission))
 ```
-- `thirty_day_mort` vs first lab measurements
+- `thirty_day_mort` vs first lab measurements  
 **Solution:**  
 ```{r warning = FALSE}
 mimic_icu_cohort %>% 
@@ -621,11 +625,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(bicarbonate, na.rm = TRUE),
             standard_deviation = sd(bicarbonate, na.rm = TRUE),
-            min = min(bicarbonate),
-            Q1 = quantile(bicarbonate, 0.25),
+            min = min(bicarbonate, na.rm = TRUE),
+            Q1 = quantile(bicarbonate, 0.25, na.rm = TRUE),
             median = median(bicarbonate, na.rm = TRUE),
-            Q3 = quantile(bicarbonate, 0.75),
-            max = max(bicarbonate))
+            Q3 = quantile(bicarbonate, 0.75, na.rm = TRUE),
+            max = max(bicarbonate, na.rm = TRUE))
 
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(y = chloride,
@@ -640,11 +644,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(chloride, na.rm = TRUE),
             standard_deviation = sd(chloride, na.rm = TRUE),
-            min = min(chloride),
-            Q1 = quantile(chloride, 0.25),
+            min = min(chloride, na.rm = TRUE),
+            Q1 = quantile(chloride, 0.25, na.rm = TRUE),
             median = median(chloride, na.rm = TRUE),
-            Q3 = quantile(chloride, 0.75),
-            max = max(chloride))
+            Q3 = quantile(chloride, 0.75, na.rm = TRUE),
+            max = max(chloride, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -660,11 +664,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(creatinine, na.rm = TRUE),
             standard_deviation = sd(creatinine, na.rm = TRUE),
-            min = min(creatinine),
-            Q1 = quantile(creatinine, 0.25),
+            min = min(creatinine, na.rm = TRUE),
+            Q1 = quantile(creatinine, 0.25, na.rm = TRUE),
             median = median(creatinine, na.rm = TRUE),
-            Q3 = quantile(creatinine, 0.75),
-            max = max(creatinine))
+            Q3 = quantile(creatinine, 0.75, na.rm = TRUE),
+            max = max(creatinine, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -680,11 +684,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(potassium, na.rm = TRUE),
             standard_deviation = sd(potassium, na.rm = TRUE),
-            min = min(potassium),
-            Q1 = quantile(potassium, 0.25),
+            min = min(potassium, na.rm = TRUE),
+            Q1 = quantile(potassium, 0.25, na.rm = TRUE),
             median = median(potassium, na.rm = TRUE),
-            Q3 = quantile(potassium, 0.75),
-            max = max(potassium))
+            Q3 = quantile(potassium, 0.75, na.rm = TRUE),
+            max = max(potassium, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -700,11 +704,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(sodium, na.rm = TRUE),
             standard_deviation = sd(sodium, na.rm = TRUE),
-            min = min(sodium),
-            Q1 = quantile(sodium, 0.25),
+            min = min(sodium, na.rm = TRUE),
+            Q1 = quantile(sodium, 0.25, na.rm = TRUE),
             median = median(sodium, na.rm = TRUE),
-            Q3 = quantile(sodium, 0.75),
-            max = max(sodium))
+            Q3 = quantile(sodium, 0.75, na.rm = TRUE),
+            max = max(sodium, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -720,11 +724,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(hematocrit, na.rm = TRUE),
             standard_deviation = sd(hematocrit, na.rm = TRUE),
-            min = min(hematocrit),
-            Q1 = quantile(hematocrit, 0.25),
+            min = min(hematocrit, na.rm = TRUE),
+            Q1 = quantile(hematocrit, 0.25, na.rm = TRUE),
             median = median(hematocrit, na.rm = TRUE),
-            Q3 = quantile(hematocrit, 0.75),
-            max = max(hematocrit))
+            Q3 = quantile(hematocrit, 0.75, na.rm = TRUE),
+            max = max(hematocrit, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -740,11 +744,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(`white blood cell count`, na.rm = TRUE),
             standard_deviation = sd(`white blood cell count`, na.rm = TRUE),
-            min = min(`white blood cell count`),
-            Q1 = quantile(`white blood cell count`, 0.25),
+            min = min(`white blood cell count`, na.rm = TRUE),
+            Q1 = quantile(`white blood cell count`, 0.25, na.rm = TRUE),
             median = median(`white blood cell count`, na.rm = TRUE),
-            Q3 = quantile(`white blood cell count`, 0.75),
-            max = max(`white blood cell count`))
+            Q3 = quantile(`white blood cell count`, 0.75, na.rm = TRUE),
+            max = max(`white blood cell count`, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -760,11 +764,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(calcium, na.rm = TRUE),
             standard_deviation = sd(calcium, na.rm = TRUE),
-            min = min(calcium),
-            Q1 = quantile(calcium, 0.25),
+            min = min(calcium, na.rm = TRUE),
+            Q1 = quantile(calcium, 0.25, na.rm = TRUE),
             median = median(calcium, na.rm = TRUE),
-            Q3 = quantile(calcium, 0.75),
-            max = max(calcium))
+            Q3 = quantile(calcium, 0.75, na.rm = TRUE),
+            max = max(calcium, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -780,11 +784,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(magnesium, na.rm = TRUE),
             standard_deviation = sd(magnesium, na.rm = TRUE),
-            min = min(magnesium),
-            Q1 = quantile(magnesium, 0.25),
+            min = min(magnesium, na.rm = TRUE),
+            Q1 = quantile(magnesium, 0.25, na.rm = TRUE),
             median = median(magnesium, na.rm = TRUE),
-            Q3 = quantile(magnesium, 0.75),
-            max = max(magnesium))
+            Q3 = quantile(magnesium, 0.75, na.rm = TRUE),
+            max = max(magnesium, na.rm = TRUE))
 
 
 mimic_icu_cohort %>% 
@@ -800,14 +804,14 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(glucose, na.rm = TRUE),
             standard_deviation = sd(glucose, na.rm = TRUE),
-            min = min(glucose),
-            Q1 = quantile(glucose, 0.25),
+            min = min(glucose, na.rm = TRUE),
+            Q1 = quantile(glucose, 0.25, na.rm = TRUE),
             median = median(glucose, na.rm = TRUE),
-            Q3 = quantile(glucose, 0.75),
-            max = max(glucose))
+            Q3 = quantile(glucose, 0.75, na.rm = TRUE),
+            max = max(glucose, na.rm = TRUE))
 ```
 
-- `thirty_day_mort` vs first vital measurements
+- `thirty_day_mort` vs first vital measurements  
 **Solution:**  
 ```{r}
 mimic_icu_cohort %>% 
@@ -823,11 +827,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(`heart rate`, na.rm = TRUE),
             standard_deviation = sd(`heart rate`, na.rm = TRUE),
-            min = min(`heart rate`),
-            Q1 = quantile(`heart rate`, 0.25),
+            min = min(`heart rate`, na.rm = TRUE),
+            Q1 = quantile(`heart rate`, 0.25, na.rm = TRUE),
             median = median(`heart rate`, na.rm = TRUE),
-            Q3 = quantile(`heart rate`, 0.75),
-            max = max(`heart rate`))
+            Q3 = quantile(`heart rate`, 0.75, na.rm = TRUE),
+            max = max(`heart rate`, na.rm = TRUE))
 
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(y = `systolic non-invasive blood pressure`,
@@ -844,12 +848,14 @@ mimic_icu_cohort %>%
                         na.rm = TRUE),
             standard_deviation = sd(`systolic non-invasive blood pressure`,
                                     na.rm = TRUE),
-            min = min(`systolic non-invasive blood pressure`),
-            Q1 = quantile(`systolic non-invasive blood pressure`, 0.25),
+            min = min(`systolic non-invasive blood pressure`, na.rm = TRUE),
+            Q1 = quantile(`systolic non-invasive blood pressure`,
+                          0.25, na.rm = TRUE),
             median = median(`systolic non-invasive blood pressure`,
                             na.rm = TRUE),
-            Q3 = quantile(`systolic non-invasive blood pressure`, 0.75),
-            max = max(glucose))
+            Q3 = quantile(`systolic non-invasive blood pressure`, 
+                          0.75, na.rm = TRUE),
+            max = max(`systolic non-invasive blood pressure`, na.rm = TRUE))
 
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(y = `mean non-invasive blood pressure`,
@@ -866,12 +872,14 @@ mimic_icu_cohort %>%
                         na.rm = TRUE),
             standard_deviation = sd(`mean non-invasive blood pressure`,
                                     na.rm = TRUE),
-            min = min(`mean non-invasive blood pressure`),
-            Q1 = quantile(`mean non-invasive blood pressure`, 0.25),
+            min = min(`mean non-invasive blood pressure`, na.rm = TRUE),
+            Q1 = quantile(`mean non-invasive blood pressure`, 
+                          0.25, na.rm = TRUE),
             median = median(`mean non-invasive blood pressure`,
                             na.rm = TRUE),
-            Q3 = quantile(`mean non-invasive blood pressure`, 0.75),
-            max = max(`mean non-invasive blood pressure`))
+            Q3 = quantile(`mean non-invasive blood pressure`, 
+                          0.75, na.rm = TRUE),
+            max = max(`mean non-invasive blood pressure`, na.rm = TRUE))
 
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(y = `respiratory rate`,
@@ -886,11 +894,11 @@ mimic_icu_cohort %>%
   summarise(n = n(),
             mean = mean(`respiratory rate`, na.rm = TRUE),
             standard_deviation = sd(`respiratory rate`, na.rm = TRUE),
-            min = min(`respiratory rate`),
-            Q1 = quantile(`respiratory rate`, 0.25),
+            min = min(`respiratory rate`, na.rm = TRUE),
+            Q1 = quantile(`respiratory rate`, 0.25, na.rm = TRUE),
             median = median(`respiratory rate`, na.rm = TRUE),
-            Q3 = quantile(`respiratory rate`, 0.75),
-            max = max(`respiratory rate`))
+            Q3 = quantile(`respiratory rate`, 0.75, na.rm = TRUE),
+            max = max(`respiratory rate`, na.rm = TRUE))
 
 mimic_icu_cohort %>% 
   ggplot(mapping = aes(y = `body temperature in Fahrenheit`,
@@ -907,14 +915,14 @@ mimic_icu_cohort %>%
                         na.rm = TRUE),
             standard_deviation = sd(`body temperature in Fahrenheit`, 
                                     na.rm = TRUE),
-            min = min(`body temperature in Fahrenheit`),
-            Q1 = quantile(`body temperature in Fahrenheit`, 0.25),
+            min = min(`body temperature in Fahrenheit`, na.rm = TRUE),
+            Q1 = quantile(`body temperature in Fahrenheit`, 0.25, na.rm = TRUE),
             median = median(`body temperature in Fahrenheit`, 
                             na.rm = TRUE),
-            Q3 = quantile(`body temperature in Fahrenheit`, 0.75),
-            max = max(`body temperature in Fahrenheit`))
+            Q3 = quantile(`body temperature in Fahrenheit`, 0.75, na.rm = TRUE),
+            max = max(`body temperature in Fahrenheit`, na.rm = TRUE))
 ```
-- `thirty_day_mort` vs first ICU unit
+- `thirty_day_mort` vs first ICU unit  
 **Solution:**  
 ```{r}
 mimic_icu_cohort %>% 
