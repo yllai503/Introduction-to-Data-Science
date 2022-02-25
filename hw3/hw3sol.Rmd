@@ -152,35 +152,37 @@ if (!dir.exists("mimiciv_shiny")) {
 ```
 
 ```{r}
-labevents_tble <- 
-labevents_tble %>% 
-  mutate(itemid = recode(itemid, "50912" = "creatinine",
-                         "50971" = "potassium", 
-                         "50983" = "sodium",
-                         "50902" = "chloride",
-                         "50882" = "bicarbonate",
-                         "51221" = "hematocrit",
-                         "51301" = "white blood cell count",
-                         "50931" = "glucose",
-                         "50960" = "magnesium",
-                         "50893" = "calcium"))
+#create wide table for labevents 
 labevents_tble_wide <- 
   labevents_tble %>% 
-  pivot_wider(names_from = itemid, values_from = valuenum, values_fn = mean) %>% 
+  pivot_wider(names_from = itemid, names_prefix = "id_",
+              values_from = valuenum, values_fn = mean) %>% 
   select(-(charttime:intime))
+labevents_tble_wide <-
+  labevents_tble_wide %>% 
+  rename("creatinine" = "id_50912", "potassium" = "id_50971", 
+         "sodium" = "id_50983", "chloride" = "id_50902", 
+         "bicarbonate" = "id_50882", "hematocrit" = "id_51221",
+         "white_blood_cell_count" = "id_51301", "glucose" = "id_50931",
+         "magnesium" = "id_50960", "calcium" = "id_50893")
+labevents_tble_wide %>% print(width = Inf)
 
-chartevents_tble <- 
-  chartevents_tble %>% 
-  mutate(itemid = recode(itemid, "220045" = "heart rate",
-                         "220181" = "mean non-invasive blood pressure", 
-                         "220179" = "systolic non-invasive blood pressure",
-                         "223761" = "body temperature in Fahrenheit",
-                         "220210" = "respiratory rate"))
+#create wide table for chartevents 
 chartevents_tble_wide <- 
   chartevents_tble %>% 
-  pivot_wider(names_from = itemid, values_from = valuenum, values_fn = mean) %>% 
+  pivot_wider(names_from = itemid, names_prefix = "id_",
+              values_from = valuenum, values_fn = mean) %>% 
   select(-hadm_id, -(charttime:intime))
-
+labevents_tble_wide <-
+  labevents_tble_wide %>% 
+  rename("heart_rate" = "id_220045",
+         "mean non-invasive blood pressure" = "id_220181",
+         "systolic non-invasive blood pressure" = "id_220179",
+         "body temperature in Fahrenheit" = "id_223761",
+         "respiratory rate" = "id_220210")
+chartevents_tble_wide %>% print(width = Inf)
+    
+    
 icu_cohort <- icustays_tble %>%
   left_join(admissions_tble, by = c("subject_id", "hadm_id")) %>% 
   left_join(patients_tble, by = "subject_id") %>% 
@@ -191,6 +193,8 @@ icu_cohort <- icustays_tble %>%
   mutate(thirty_day_mort = ifelse((deathtime - admittime) <= 43200, 
                                   "Yes", "No")) %>%
   mutate(thirty_day_mort = replace_na(thirty_day_mort, "No")) %>% 
+  show_query()
+icu_cohort %>% 
   show_query() %>%
   print(width = Inf)
 ```
