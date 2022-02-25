@@ -190,9 +190,11 @@ icu_cohort <- icustays_tble %>%
   filter(age_admission > 18) %>% 
   left_join(labevents_tble_wide, by = "subject_id") %>%
   left_join(chartevents_tble_wide, by = c("subject_id", "stay_id")) %>%
-  mutate(admittime = as.Date(admittime)) %>% 
-  DATE_DIFF(admittime, dod, DAY) %>% 
-  show_query()
+  collect() %>% 
+  mutate(thirty_day_mort = ifelse((as.POSIXct(dod) - admittime) <= 2592000, 
+                                  "Yes", "No")) %>%
+  mutate(thirty_day_mort = replace_na(thirty_day_mort, "No")) %>% 
+  write_rds("mimiciv_shiny/icu_cohort.rds")
 icu_cohort %>% print(width = Inf)
 ```
 
