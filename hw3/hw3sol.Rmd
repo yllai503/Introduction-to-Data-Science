@@ -173,30 +173,27 @@ chartevents_tble_wide <-
   pivot_wider(names_from = itemid, names_prefix = "id_",
               values_from = valuenum, values_fn = mean) %>% 
   select(-hadm_id, -(charttime:intime))
-labevents_tble_wide <-
-  labevents_tble_wide %>% 
+chartevents_tble_wide <-
+  chartevents_tble_wide %>% 
   rename("heart_rate" = "id_220045",
-         "mean non-invasive blood pressure" = "id_220181",
-         "systolic non-invasive blood pressure" = "id_220179",
-         "body temperature in Fahrenheit" = "id_223761",
-         "respiratory rate" = "id_220210")
+         "mean_non_invasive_blood_pressure" = "id_220181",
+         "systolic_non_invasive_blood_pressure" = "id_220179",
+         "body_temperature_in_Fahrenheit" = "id_223761",
+         "respiratory_rate" = "id_220210")
 chartevents_tble_wide %>% print(width = Inf)
     
     
 icu_cohort <- icustays_tble %>%
   left_join(admissions_tble, by = c("subject_id", "hadm_id")) %>% 
   left_join(patients_tble, by = "subject_id") %>% 
-  left_join(labevents_tble_wide, by = "subject_id") %>%
-  left_join(chartevents_tble_wide, by = c("subject_id", "stay_id")) %>% 
   mutate(age_admission = year(admittime) + anchor_age - anchor_year) %>% 
   filter(age_admission > 18) %>% 
-  mutate(thirty_day_mort = ifelse((deathtime - admittime) <= 43200, 
-                                  "Yes", "No")) %>%
-  mutate(thirty_day_mort = replace_na(thirty_day_mort, "No")) %>% 
+  left_join(labevents_tble_wide, by = "subject_id") %>%
+  left_join(chartevents_tble_wide, by = c("subject_id", "stay_id")) %>%
+  mutate(admittime = as.Date(admittime)) %>% 
+  DATE_DIFF(admittime, dod, DAY) %>% 
   show_query()
-icu_cohort %>% 
-  show_query() %>%
-  print(width = Inf)
+icu_cohort %>% print(width = Inf)
 ```
 
 Close database connection and clear workspace.
