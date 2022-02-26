@@ -31,7 +31,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
           plotOutput("Plot"),
-          plotOutput("Table")
+          tableOutput("Table")
         )
     )
 )
@@ -115,10 +115,9 @@ server <- function(input, output) {
                        "Marital Status", "Gender", "First ICU Unit")
       if (input$var %in% categorical) {
         icu_cohort %>%
-          group_by(cate) %>%
+          group_by({{cate}}) %>%
           summarise(n = n()) %>%
-          mutate(Proportion = n / sum(n)) %>%
-          print()
+          mutate(Proportion = n / sum(n))
       } else {
         icu_cohort %>%
           summarise(n = n(),
@@ -131,7 +130,7 @@ server <- function(input, output) {
                     max = max(cont, na.rm = TRUE))
       }
     })
-    output$Table <- DT::renderDT(summary_table())
+    output$Table <- renderTable(summary_table())
 }
 
       
