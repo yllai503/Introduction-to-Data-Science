@@ -34,7 +34,8 @@ if (Sys.info()[["nodename"]] == "biostat-203b-teaching-server") {
   satoken <- "/mnt/mimiciv/1.0/biostat-203b-2022winter-3fdc2392ac39.json"
 } else {
   # on my own Mac laptop
-  satoken <- "/Users/huazhou/Documents/github.com/ucla-biostat-203b/2022winter/hw/hw3/biostat-203b-2022winter-3fdc2392ac39.json"
+  satoken <- "/Users/huazhou/Documents/github.com/ucla-biostat-203b/2022winter
+  /hw/hw3/biostat-203b-2022winter-3fdc2392ac39.json"
 }
 # BigQuery authentication using service account
 bq_auth(
