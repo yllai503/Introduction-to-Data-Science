@@ -40,8 +40,10 @@ MNAR: Missing not at random. The probability of being missing varies for reasons
 
 2. Explain in a couple of sentences how the Multiple Imputation by Chained Equations (MICE) work.  
 **Solution:**
-MICE is a multiple imputation method used to replace missing data values in a data set under certain assumptions about the data missingness mechanism (e.g., the data are missing at random, the data are missing completely at random).  
-The procedure ‘fills in’ (imputes) missing data in a dataset through an iterative series of predictive models. In each iteration, each specified variable in the dataset is imputed using the other variables in the dataset. These iterations should be run until it appears that convergence has been met.  
+MICE is a multiple imputation method used to replace missing data values in a data set under certain assumptions about the data missingness mechanism (e.g., the data are missing at random, the data are missing completely at random). MICE works as following phases:    
+1. Imputation or Fill-in Phase: The missing data are filled in with estimated values and a complete data set is created. This process of fill-in is repeated m times.  
+2. Analysis Phase: Each of the m complete data sets is then analyzed using a statistical method of interest (e.g. linear regression).  
+3. Pooling Phase: The parameter estimates (e.g. coefficients and standard errors) obtained from each analyzed data set are then combined for inference.
 This process is continued until all specified variables have been imputed. Additional iterations can be run if it appears that the average imputed values have not converged, although no more than 5 iterations are usually necessary.
 
 3. Perform a data quality check of the ICU stays data. Discard variables with substantial missingness, say >5000 `NA`s. Replace apparent data entry errors by `NA`s.  
@@ -91,14 +93,22 @@ icu_impute <-
 
 
 5. Make imputation diagnostic plots and explain what they mean.  
-**Solution:**
+**Solution:**  
+1. Distribution of Imputed Values: The red line is the density of the original, non-missing data. The smaller, black lines are the density of the imputed values in each of the datasets. If these don’t match up, it’s not a problem, however it may tell you that your data was not Missing Completely at Random (MCAR).  
 ```{r}
 plotDistributions(icu_impute)
+```
+2. Convergence of Correlation: It shows a boxplot of the correlations between imputed values in every combination of datasets, at each iteration.  
+```{r}
 plotCorrelations(icu_impute)
+```
+3. Center and Dispersion Convergence: Sometimes, if the missing data locations are correlated with higher or lower values, we need to run multiple iterations for the process to converge to the true theoretical mean (given the information that exists in the dataset). We can see if the imputed data converged, or if we need to run more iterations. It doesn’t look like this dataset had a convergence issue. When plotting categorical variables, the center and dispersion metrics plotted are the percent of the mode and the entropy, respectively.  
+```{r}
 plotVarConvergence(icu_impute)
+```
+4. Model OOB Error: Random Forests give us a cheap way to determine model error without cross validation. Each model returns the OOB accuracy for classification, and r-squared for regression. We can see how these converged as the iterations progress. It looks like the variables were imputed with a reasonable degree of accuracy. That spike after the first iteration was due to the nature of how the missing values are filled in before the models are run.
+```{r}
 plotModelError(icu_impute)
-plotVarImportance(icu_impute)
-plotImputationVariance(icu_impute)
 ```
 
 
@@ -108,7 +118,7 @@ plotImputationVariance(icu_impute)
 icu_impute_2 <- completeData(icu_impute)[[2]]
 ```
 
-We choose the second imputed data set to be used in Q2. Multiple imputation is a general approach to the problem of missing data that is available in several commonly used statistical packages. It aims to allow for the uncertainty about the missing data by creating several different plausible imputed data sets and appropriately combining results obtained from each of them.
+We choose the second imputed data set to be used in Q2. We would like to use 3 to 10 imputed data sets and fit the model to each of the multiple imputations and then combine the results (e.g. using Rubin's Rules) when we are doing Multiple Imputation. Rubin's Rules are designed to pool parameter estimates, such as mean differences, regression coefficients, standard errors and to derive confidence intervals and p-values. Combining the results using Rubin's Rules can lower the random error effect. Rubin's Rules can be approached using `pool` in R.
 
 ## Q2. Predicting 30-day mortality
 
