@@ -117,6 +117,8 @@ Develop at least two analytic approaches for predicting the 30-day mortality of 
 ```{r}
 library(splitTools)
 set.seed(203)
+icu_impute_2$thirty_day_mort <- 
+  ifelse(icu_impute_2$thirty_day_mort == "Yes" ,1 , 0)
 sets <- partition(icu_impute_2$thirty_day_mort, p = c(train = 0.8, test = 0.2))
 
 icu_train <- icu_impute_2[sets$train, ]
@@ -124,13 +126,27 @@ icu_test <- icu_impute_2[sets$test, ]
 ```
 
 2. Train the models using the training set.  
-**Solution:**
+**Solution:**  
+(1) Logistic regression
+```{r}
+logistic <- glm(thirty_day_mort ~ 
+                  gender + anchor_age + marital_status + ethnicity + hematocrit
+                  , family=binomial(link='logit'), data=icu_train)
+```
+
+(2) Random forest
 ```{r}
 
 ```
 
 3. Compare model prediction performance on the test set.  
-**Solution:**
+**Solution:**  
+(1) Logistic regression
+```{r}
+
+```
+
+(2) Random forest
 ```{r}
 
 ```
