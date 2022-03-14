@@ -132,10 +132,12 @@ icu_test <- icu_impute_2[sets$test, ]
 logistic <- glm(thirty_day_mort ~ 
                   gender + anchor_age + marital_status + ethnicity + hematocrit
                   , family=binomial(link='logit'), data=icu_train)
+summary(logistic)
 ```
 
 (2) Random forest
 ```{r}
+library(randomForest)
 
 ```
 
@@ -143,7 +145,10 @@ logistic <- glm(thirty_day_mort ~
 **Solution:**  
 (1) Logistic regression
 ```{r}
-
+probabs <- predict(logistic, icu_test, type='response') 
+preds <- ifelse(probabs > 0.5, 1, 0)
+library(caret)
+confusionMatrix(factor(preds), factor(icu_test$thirty_day_mort))
 ```
 
 (2) Random forest
