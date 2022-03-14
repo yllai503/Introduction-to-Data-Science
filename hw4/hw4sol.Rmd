@@ -119,6 +119,11 @@ library(splitTools)
 set.seed(203)
 icu_impute_2$thirty_day_mort <- 
   ifelse(icu_impute_2$thirty_day_mort == "Yes" ,1 , 0)
+icu_impute_2 <- transform(icu_impute_2,
+                          gender = as.factor(gender), 
+                          marital_status = as.factor(marital_status),
+                          ethnicity = as.factor(ethnicity),
+                          thirty_day_mort = as.factor(thirty_day_mort))
 sets <- partition(icu_impute_2$thirty_day_mort, p = c(train = 0.8, test = 0.2))
 
 icu_train <- icu_impute_2[sets$train, ]
@@ -138,13 +143,17 @@ summary(logistic)
 (2) Random forest
 ```{r}
 library(randomForest)
+sapply(icu_train, class)
 
+rf <- randomForest(factor(thirty_day_mort) ~ 
+                  gender + anchor_age + marital_status + ethnicity + hematocrit
+                  , data=icu_train)
 ```
 
 3. Compare model prediction performance on the test set.  
 **Solution:**  
 (1) Logistic regression
-```{r}
+```{r, warning = FALSE}
 probabs <- predict(logistic, icu_test, type='response') 
 preds <- ifelse(probabs > 0.5, 1, 0)
 library(caret)
