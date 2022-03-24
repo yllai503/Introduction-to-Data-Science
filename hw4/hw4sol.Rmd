@@ -1,0 +1,188 @@
+---
+title: "Biostat 203B Homework 4"
+subtitle: Due Mar 18 @ 11:59PM
+author: Yenlin Lai
+output:
+  # ioslides_presentation: default
+  html_document:
+    toc: true
+    toc_depth: 4
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+Display machine information:
+```{r}
+sessionInfo()
+```
+Load database libraries and the tidyverse frontend:
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(miceRanger))
+```
+
+## Q1. Missing data
+
+Through the Shiny app developed in HW3, we observe abundant missing values in the MIMIC-IV ICU cohort we created. In this question, we use multiple imputation to obtain a data set without missing values.
+
+0. Read following tutorials on the R package miceRanger for imputation: <https://github.com/farrellday/miceRanger>, <https://cran.r-project.org/web/packages/miceRanger/vignettes/miceAlgorithm.html>.
+
+    A more thorough book treatment of the practical imputation strategies is the book [*_Flexible Imputation of Missing Data_*](https://stefvanbuuren.name/fimd/) by Stef van Buuren. 
+
+1. Explain the jargon MCAR, MAR, and MNAR.  
+**Solution:**  
+MCAR: Missing completely at random. The missing values are not systematically different from the values we did observe, meaning that causes of the missing data are unrelated to the data.  
+MAR: Missing at random. The missing values are systematically different from the observed values, but the systematic differences are fully accounted for by measured covariates. MAR is more general and more realistic than MCAR. Modern missing data methods generally start from the MAR assumption.  
+MNAR: Missing not at random. The probability of being missing varies for reasons that are unknown to us, meaning that the missing values are thought to systematically differ from observed values.
+
+2. Explain in a couple of sentences how the Multiple Imputation by Chained Equations (MICE) work.  
+**Solution:**
+MICE is a multiple imputation method used to replace missing data values in a data set under certain assumptions about the data missingness mechanism (e.g., the data are missing at random, the data are missing completely at random). MICE works as following phases:    
++ Imputation or Fill-in Phase: The missing data are filled in with estimated values and a complete data set is created. This process of fill-in is repeated m times.  
++ Analysis Phase: Each of the m complete data sets is then analyzed using a statistical method of interest (e.g. linear regression).  
++ Pooling Phase: The parameter estimates (e.g. coefficients and standard errors) obtained from each analyzed data set are then combined for inference.
+This process is continued until all specified variables have been imputed. Additional iterations can be run if it appears that the average imputed values have not converged, although no more than 5 iterations are usually necessary.
+
+3. Perform a data quality check of the ICU stays data. Discard variables with substantial missingness, say >5000 `NA`s. Replace apparent data entry errors by `NA`s.  
+**Solution:**
+```{r}
+icu_cohort <- readRDS("icu_cohort.rds")
+
+#decide which variables have more than 5000 NAs
+na_count <- icu_cohort %>% 
+  sapply(function(y) sum(is.na(y)))
+na_count %>% 
+  data.frame() %>% 
+  filter(. > 5000)
+
+#create a data without variables with substantial missingness
+icu_cohort_na <- 
+  icu_cohort %>% 
+  select(-c(deathtime, edregtime, edouttime, dod, magnesium, potassium,
+            sodium, white_blood_cell_count, bicarbonate, calcium, chloride, 
+            creatinine, glucose, body_temperature_in_Fahrenheit, 
+            systolic_non_invasive_blood_pressure, 
+            mean_non_invasive_blood_pressure, respiratory_rate, heart_rate))
+
+#define outliers
+#there is only one continuous variable with NAs
+outliers <- boxplot(icu_cohort_na$hematocrit, plot = FALSE)$out
+
+#replace apparent data entry errors by NAs
+icu_cohort_na[icu_cohort_na$hematocrit %in% outliers, "hematocrit"] = NA
+
+print(icu_cohort_na, width = Inf)
+
+na_count_na <- icu_cohort_na %>% 
+  sapply(function(y) sum(is.na(y)))
+na_count_na
+```
+
+
+4. Impute missing values by `miceRanger` (request $m=3$ data sets). This step is computational intensive. Make sure to save the imputation results as a file. Hint: Setting `max.depth=10` in the `miceRanger` function may cut some computing time.  
+**Solution:**
+```{r}
+icu_impute <- 
+  miceRanger(icu_cohort_na,
+             m = 3,
+             max.depth=10)
+```
+
+
+5. Make imputation diagnostic plots and explain what they mean.  
+**Solution:**  
+
++ Distribution of Imputed Values: The red line is the density of the original, non-missing data. The smaller, black lines are the density of the imputed values in each of the datasets. If these don’t match up, it’s not a problem, however it may tell you that your data was not Missing Completely at Random (MCAR).  
+
+```{r}
+plotDistributions(icu_impute)
+```
+  
++ Convergence of Correlation: It shows a boxplot of the correlations between imputed values in every combination of datasets, at each iteration.  
+
+```{r}
+plotCorrelations(icu_impute)
+```
+  
++ Center and Dispersion Convergence: Sometimes, if the missing data locations are correlated with higher or lower values, we need to run multiple iterations for the process to converge to the true theoretical mean (given the information that exists in the dataset). We can see if the imputed data converged, or if we need to run more iterations. It doesn’t look like this dataset had a convergence issue. When plotting categorical variables, the center and dispersion metrics plotted are the percent of the mode and the entropy, respectively.  
+
+```{r}
+plotVarConvergence(icu_impute)
+```
+  
++ Model OOB Error: Random Forests give us a cheap way to determine model error without cross validation. Each model returns the OOB accuracy for classification, and r-squared for regression. We can see how these converged as the iterations progress. It looks like the variables were imputed with a reasonable degree of accuracy. That spike after the first iteration was due to the nature of how the missing values are filled in before the models are run.  
+
+```{r}
+plotModelError(icu_impute)
+```
+
+6. Choose one of the imputed data sets to be used in Q2. This is **not** a good idea to use just one imputed data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple Imputation strategy is.  
+**Solution:**
+```{r}
+icu_impute_2 <- completeData(icu_impute)[[2]]
+```
+
+We choose the second imputed data set to be used in Q2. We would like to use 3 to 10 imputed data sets and fit the model to each of the multiple imputations and then combine the results (e.g. using Rubin's Rules) when we are doing Multiple Imputation. Rubin's Rules are designed to pool parameter estimates, such as mean differences, regression coefficients, standard errors and to derive confidence intervals and p-values. Combining the results using Rubin's Rules can lower the random error effect. Rubin's Rules can be approached using `pool` in R.
+
+## Q2. Predicting 30-day mortality
+
+Develop at least two analytic approaches for predicting the 30-day mortality of patients admitted to ICU using demographic information (gender, age, marital status, ethnicity), first lab measurements during ICU stay, and first vital measurements during ICU stay. For example, you can use (1) logistic regression (`glm()` function in base R or keras), (2) logistic regression with lasso penalty (glmnet or keras package), (3) random forest (randomForest package), or (4) neural network (keras package).
+
+1. Partition data into 80% training set and 20% test set. Stratify partitioning according the 30-day mortality status.  
+**Solution:**
+```{r}
+library(splitTools)
+set.seed(203)
+icu_impute_2$thirty_day_mort <- 
+  ifelse(icu_impute_2$thirty_day_mort == "Yes" ,1 , 0)
+icu_impute_2 <- transform(icu_impute_2,
+                          gender = as.factor(gender), 
+                          marital_status = as.factor(marital_status),
+                          ethnicity = as.factor(ethnicity),
+                          thirty_day_mort = as.factor(thirty_day_mort))
+sets <- partition(icu_impute_2$thirty_day_mort, p = c(train = 0.8, test = 0.2))
+
+icu_train <- icu_impute_2[sets$train, ]
+icu_test <- icu_impute_2[sets$test, ]
+```
+
+2. Train the models using the training set.  
+**Solution:**  
+We use logistic regression and random forest to predict the 30-day mortality of patients admitted to ICU.  
+
++ Logistic regression
+```{r}
+logistic <- glm(thirty_day_mort ~ 
+                  gender + anchor_age + marital_status + ethnicity + hematocrit
+                  , family=binomial(link='logit'), data=icu_train)
+summary(logistic)
+```
+
++ Random forest
+```{r, message = FALSE}
+library(randomForest)
+rf <- randomForest(thirty_day_mort ~ 
+                  gender + anchor_age + marital_status + ethnicity + hematocrit
+                  , data=icu_train)
+```
+
+3. Compare model prediction performance on the test set.  
+**Solution:**  
++ Logistic regression
+```{r, warning = FALSE}
+lr_probab <- predict(logistic, icu_test, type='response') 
+lr_pred <- ifelse(lr_probab > 0.5, 1, 0)
+library(caret)
+confusionMatrix(factor(lr_pred), factor(icu_test$thirty_day_mort))
+```
+
++ Random forest
+```{r}
+rf_pred <- predict(rf, icu_test)
+confusionMatrix(rf_pred, icu_test$thirty_day_mort)
+```
+
+We can see that the accuracy rate of the logistic regression model is 89.76%, and the accuracy rate of the random forest model is 89.69%. Although the accuracy rates are close and that of the logistic regression model seems to be slight higher than the random forest model, we cannot claim that the logistic regression model is better in predicting the 30-day mortality of patients admitted to ICU in this dataset. Since the outcome variable is unbalanced, we can get a high accuracy rate by simply guessing all the patients did not die in 30 days. Therefore, we will desire to apply random forest in the future cases because it still try to predict the patients die in 30 days, even if the accracy rate is slightly lower than the logistic regression model.
